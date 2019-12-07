@@ -17,6 +17,13 @@
 #include <memory>
 #include <vector>
 
+// Assignment 2 Includes
+//#include <igl/vertex_triangle_adjacency.h>
+
+#include <igl/collapse_edge.h>
+#include <igl/edge_flaps.h>
+#include <igl/shortest_edge_and_midpoint.h>
+
 // Alec: This is a mesh class containing a variety of data types (normals,
 // overlays, material colors, etc.)
 //
@@ -150,8 +157,36 @@ public:
   Eigen::MatrixXd V; // Vertices of the current mesh (#V x 3)
   Eigen::MatrixXi F; // Faces of the mesh (#F x 3)
 
+  // Assignment 2
+  Eigen::MatrixXd D_V, V_backup; // BACKUP of Vertices of the current mesh (#V x 3)
+  Eigen::MatrixXi D_F, F_backup; // BACKUP of Faces of the mesh (#F x 3)
+  Eigen::VectorXi D_EMAP;
+  Eigen::MatrixXi D_E, D_EF, D_EI;
+  int num_collapsed;
+  typedef std::set<std::pair<double, int> > PriorityQueue;
+  PriorityQueue Q;
+  std::vector<PriorityQueue::iterator > Qit;
+  Eigen::MatrixXd C, C_backup; // If an edge were collapsed, we'd collapse it to these points:
+
+  
+  std::vector< std::vector<int> > V_faces; // Array as big as V, each index i represent Vertex[i]. 
+									   // each cell contains vector of type int that contains all the indexes of faces that has vertex i.
+  std::vector< Eigen::MatrixXd > V_Q; // Q matrice for each V
+
+
+  IGL_INLINE void decimateEdges();
+  IGL_INLINE void calculate_v_faces();
+  IGL_INLINE void calculate_q_for_v();
+
+  IGL_INLINE Eigen::VectorXd compute_d(int index);
+  IGL_INLINE void decimationReset();
+
+
+
   // Per face attributes
   Eigen::MatrixXd F_normals; // One normal per face
+  Eigen::MatrixXd F_normals_backup; // One normal per face
+
 
   Eigen::MatrixXd F_material_ambient; // Per face ambient color
   Eigen::MatrixXd F_material_diffuse; // Per face diffuse color

@@ -16,6 +16,7 @@
 #include "../MeshGL.h"
 //#include "../ViewerCore.h"
 #include "../ViewerData.h"
+//#include "../../MeshData.h"
 #include "ViewerPlugin.h"
 
 #include <Eigen/Core>
@@ -30,7 +31,9 @@
 #define IGL_MOD_ALT             0x0004
 #define IGL_MOD_SUPER           0x0008
 
-
+// Assignment 2
+using namespace Eigen;
+#include <set>
 
 namespace igl
 {
@@ -114,6 +117,10 @@ namespace glfw
     // Returns 0 if not found
     IGL_INLINE size_t mesh_index(const int id) const;
 
+	// Assignment 2
+	IGL_INLINE void load_meshes_from_config_file(const std::string& mesh_file_name);
+	
+
 
 public:
     //////////////////////
@@ -129,7 +136,23 @@ public:
     int next_data_id;
 
 
-    
+    // Assignment 2: mesh decimation
+
+	//std::vector<MeshData> mesh_data_list;
+	//MatrixXd D_V, D_OV;
+	//MatrixXi D_F, D_OF;
+
+	//VectorXi D_EMAP;
+	//MatrixXi D_E, D_EF, D_EI;
+
+	//typedef std::set<std::pair<double, int> > PriorityQueue;
+	//PriorityQueue Q;
+	//std::vector<PriorityQueue::iterator > Qit;
+	// If an edge were collapsed, we'd collapse it to these points:
+	//MatrixXd C;
+	//int num_collapsed;
+
+
 
     // List of registered plugins
 //    std::vector<ViewerPlugin*> plugins;

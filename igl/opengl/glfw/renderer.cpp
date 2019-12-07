@@ -181,6 +181,7 @@ float Renderer::toothPicking(double newx, double newy)
 
 }
 
+
 IGL_INLINE void Renderer::resize(GLFWwindow* window,int w, int h)
 	{
 		if (window) {

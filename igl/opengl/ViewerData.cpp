@@ -36,6 +36,9 @@ IGL_INLINE igl::opengl::ViewerData::ViewerData()
   is_visible(1)
 {
   clear();
+
+  // Assignment 2
+
 };
 
 IGL_INLINE void igl::opengl::ViewerData::set_face_based(bool newvalue)
@@ -387,6 +390,151 @@ IGL_INLINE void igl::opengl::ViewerData::clear()
   labels_strings.clear();
 
   face_based = false;
+
+}
+using namespace Eigen; // Assignment 2
+IGL_INLINE void igl::opengl::ViewerData::decimationReset() {
+	const auto& our_decimation =
+		[&](
+			const int e,
+			const Eigen::MatrixXd& V,
+			const Eigen::MatrixXi& /*F*/,
+			const Eigen::MatrixXi& E,
+			const Eigen::VectorXi& /*EMAP*/,
+			const Eigen::MatrixXi& /*EF*/,
+			const Eigen::MatrixXi& /*EI*/,
+			double& cost,
+			Eigen::RowVectorXd& p)->void
+	{
+		Eigen::Matrix4d Q_combined = V_Q[E(e, 0)] + V_Q[E(e, 1)];
+		Eigen::Matrix4d Q_combined_inverse = Q_combined;
+		Q_combined_inverse.row(3) << 0, 0, 0, 1;
+		Eigen::Vector4d to_mul;
+		to_mul << 0, 0, 0, 1;
+		Eigen::VectorXd new_v = Q_combined_inverse.inverse() * to_mul;
+		cost = new_v.transpose() * Q_combined * new_v;
+		new_v.conservativeResize(3);
+		p = new_v;
+	};
+
+
+	D_F = F_backup;
+	F = F_backup;
+	D_V = V_backup;
+	V = V_backup;
+	compute_normals();
+	edge_flaps(D_F, D_E, D_EMAP, D_EF, D_EI);
+	Qit.resize(D_E.rows());
+	C = V_backup;
+	C.conservativeResize(D_E.rows(), D_V.cols());
+	VectorXd costs(D_E.rows());
+	Q.clear();
+
+	calculate_v_faces();
+	calculate_q_for_v();
+
+	for (int e = 0; e < D_E.rows(); e++)
+	{
+		double cost = e;
+		RowVectorXd p(1, 3);
+		our_decimation(e, D_V, D_F, D_E, D_EMAP, D_EF, D_EI, cost, p);
+
+		C.row(e) = p;
+		Qit[e] = Q.insert(std::pair<double, int>(cost, e)).first;
+	}
+
+	num_collapsed = 0;
+	clear();
+	set_mesh(D_V, D_F);
+	set_face_based(true);
+}
+
+IGL_INLINE void igl::opengl::ViewerData::decimateEdges() {
+	const auto& our_decimation =
+		[&](
+			const int e,
+			const Eigen::MatrixXd& V,
+			const Eigen::MatrixXi& /*F*/,
+			const Eigen::MatrixXi& E,
+			const Eigen::VectorXi& /*EMAP*/,
+			const Eigen::MatrixXi& /*EF*/,
+			const Eigen::MatrixXi& /*EI*/,
+			double& cost,
+			Eigen::RowVectorXd& p)->void
+	{
+		Eigen::Matrix4d Q_combined = V_Q[E(e, 0)] + V_Q[E(e, 1)];
+		Eigen::Matrix4d Q_combined_inverse = Q_combined;
+		Q_combined_inverse.row(3) << 0, 0, 0, 1;
+		Eigen::Vector4d to_mul;
+		to_mul << 0, 0, 0, 1;
+		Eigen::VectorXd new_v = Q_combined_inverse.inverse() * to_mul;
+		cost = new_v.transpose() * Q_combined * new_v;
+		new_v.conservativeResize(3);
+		p = new_v; 
+	};
+
+
+	MatrixXi D_F = F;
+	MatrixXd D_V = V;
+	if (!Q.empty())
+	{
+		bool something_collapsed = false;
+		// collapse edge
+		const int max_iter = std::ceil(0.05 * Q.size());
+		for (int j = 0; j < max_iter; j++)
+		{
+			if (!collapse_edge(
+				our_decimation , D_V, D_F, D_E, D_EMAP, D_EF, D_EI, Q, Qit, C))
+			{
+				break;
+			}
+			something_collapsed = true;
+			num_collapsed++;
+		}
+
+		if (something_collapsed)
+		{
+			clear();
+			set_mesh(D_V, D_F);
+			set_face_based(true);
+		}
+		std::cout << "collapsed " << num_collapsed << " edges" << std::endl;
+	}
+}
+
+IGL_INLINE void igl::opengl::ViewerData::calculate_v_faces() {
+	V_faces.clear();
+	for (int i = 0; i < D_V.rows(); i++) {
+		std::vector<int> faces_empty_vect;
+		V_faces.push_back(faces_empty_vect);
+	}
+	
+	for (int face_indx = 0; face_indx < D_F.rows(); face_indx++) {
+		for (int j = 0; j < D_F.row(face_indx).size(); j++) {
+			V_faces[D_F.row(face_indx)[j]].push_back(face_indx);
+		}
+	}
+}
+
+IGL_INLINE void igl::opengl::ViewerData::calculate_q_for_v() {
+	V_Q.clear();
+	for (int v_id = 0; v_id < D_V.rows(); v_id++) { // for each V
+		Matrix4d Q_mat = MatrixXd::Zero(4,4);
+		VectorXd vertex = D_V.row(v_id);
+		for (int face_pos = 0; face_pos < V_faces[v_id].size(); face_pos++) {
+			int current_face_id = V_faces[v_id][face_pos];
+			VectorXd face_normal = F_normals.row(current_face_id);
+			face_normal.normalized().transpose();
+			double d_result = -1 * face_normal.dot(vertex); // d = -ax -by -cz
+			Vector4d plane_coeff(4);
+			plane_coeff << face_normal, d_result;
+			Matrix4d K_P(4, 4);
+			K_P = plane_coeff * plane_coeff.transpose();
+			Q_mat = Q_mat + K_P;
+		}
+
+		V_Q.push_back(Q_mat);
+	}
 }
 
 IGL_INLINE void igl::opengl::ViewerData::compute_normals()

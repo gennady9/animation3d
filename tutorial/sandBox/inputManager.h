@@ -4,41 +4,41 @@
 static void glfw_mouse_press(GLFWwindow* window, int button, int action, int modifier)
 {
 
-  Renderer* rndr = (Renderer*) glfwGetWindowUserPointer(window);
-  
-  if (action == GLFW_PRESS)
-  {
-	  double x2, y2;
-	  glfwGetCursorPos(window, &x2, &y2);
-	  igl::opengl::glfw::Viewer* scn = rndr->GetScene();
-	  bool found = false;
-	  float minDistance = std::numeric_limits<float>::max();
-	  float distance;
-	  int closestObject = 0;
-	  int i = 0, savedIndx = scn->selected_data_index;
+	Renderer* rndr = (Renderer*)glfwGetWindowUserPointer(window);
 
-	  for (; i < scn->data_list.size(); i++)
-	  {
-		  scn->selected_data_index = i;
-		  distance = rndr->toothPicking(x2, y2);
-		  if (distance > 0 && distance < minDistance) {
-			  minDistance = distance;
-			  closestObject = i;
-			  found = true;
-		  }
-	  }
-	  if (!found)
-	  {
-		  std::cout << "not found " << std::endl;
-		  scn->selected_data_index = savedIndx;
-	  }
-	  else {
-		  std::cout << "found " << closestObject << std::endl;
-		  scn->selected_data_index = closestObject;
-	  }
-	  rndr->UpdatePosition(x2, y2);
-	 
-  }
+	if (action == GLFW_PRESS)
+	{
+		double x2, y2;
+		glfwGetCursorPos(window, &x2, &y2);
+		igl::opengl::glfw::Viewer* scn = rndr->GetScene();
+		bool found = false;
+		float minDistance = std::numeric_limits<float>::max();
+		float distance;
+		int closestObject = 0;
+		int i = 0, savedIndx = scn->selected_data_index;
+
+		for (; i < scn->data_list.size(); i++)
+		{
+			scn->selected_data_index = i;
+			distance = rndr->toothPicking(x2, y2);
+			if (distance > 0 && distance < minDistance) {
+				minDistance = distance;
+				closestObject = i;
+				found = true;
+			}
+		}
+		if (!found)
+		{
+			std::cout << "not found " << std::endl;
+			scn->selected_data_index = savedIndx;
+		}
+		else {
+			std::cout << "found " << closestObject << std::endl;
+			scn->selected_data_index = closestObject;
+		}
+		rndr->UpdatePosition(x2, y2);
+
+	}
 }
 
 
@@ -153,6 +153,18 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 		case ':':
 			scn->data().show_faceid = !scn->data().show_faceid;
 			break;
+		case 'R':
+		case 'r':
+		{
+			scn->data().decimationReset();
+			break;
+		}
+		case ' ':
+		{
+			scn->data().decimateEdges();
+			
+			break;
+		}
 		default: break;//do nothing
 		}
 }

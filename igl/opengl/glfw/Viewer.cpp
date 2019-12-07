@@ -42,6 +42,9 @@
 #include <igl/unproject.h>
 #include <igl/serialize.h>
 
+// Assignment 2 Includes
+
+
 // Internal global variables used for glfw event handling
 //static igl::opengl::glfw::Viewer * __viewer;
 static double highdpi = 1;
@@ -128,8 +131,9 @@ namespace glfw
     {
       append_mesh();
     }
+	
     data().clear();
-
+	
     size_t last_dot = mesh_file_name_string.rfind('.');
     if (last_dot == std::string::npos)
     {
@@ -147,6 +151,9 @@ namespace glfw
       if (!igl::readOFF(mesh_file_name_string, V, F))
         return false;
       data().set_mesh(V,F);
+	  data().F_backup = F;
+	  data().V_backup = V;
+
     }
     else if (extension == "obj" || extension =="OBJ")
     {
@@ -168,6 +175,8 @@ namespace glfw
 
       data().set_mesh(V,F);
       data().set_uv(UV_V,UV_F);
+	  data().F_backup = F;
+	  data().V_backup = V;
 
     }
     else
@@ -193,6 +202,9 @@ namespace glfw
     //  if (plugins[i]->post_load())
     //    return true;
 
+	
+	// Assignment 2
+	data().decimationReset();
     return true;
   }
 
@@ -363,6 +375,28 @@ namespace glfw
   }
 
  
+  // Assignment 2 functions
+
+
+  IGL_INLINE void Viewer::load_meshes_from_config_file(const std::string& mesh_file_name_string) {
+
+		std::ifstream file(mesh_file_name_string);
+		if (file.is_open()) {
+			std::string line;
+			while (getline(file, line)) {
+				load_mesh_from_file(line);
+			}
+			file.close();
+		}
+		else {
+			std::cout << " -- configuration file not found --" << std::endl;
+			return;
+		}
+	    for (size_t i = 0; i < data_list.size(); ++i) {
+		    data_list[i].decimationReset();
+	    }
+
+  }
 
 } // end namespace
 } // end namespace
