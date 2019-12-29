@@ -119,6 +119,11 @@ namespace glfw
 
 	// Assignment 2
 	IGL_INLINE void load_meshes_from_config_file(const std::string& mesh_file_name);
+	// Assignment 3
+	IGL_INLINE void update_initial_positions();
+	IGL_INLINE bool sphereReachable();
+	IGL_INLINE void IKSolver();
+	bool animation = false;
 	
 
 
@@ -133,6 +138,7 @@ public:
     std::vector<ViewerData> data_list;
 
     size_t selected_data_index;
+	bool scene_selected;
     int next_data_id;
 
 

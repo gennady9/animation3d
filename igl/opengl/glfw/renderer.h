@@ -11,6 +11,7 @@ class Renderer
 {
 public:
 	Renderer();
+	IGL_INLINE void Animate();
 	~Renderer();
 	IGL_INLINE void draw( GLFWwindow* window);
 	IGL_INLINE void init(igl::opengl::glfw::Viewer* scn);

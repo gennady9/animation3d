@@ -36,6 +36,13 @@ next_core_id(2)
 
 }
 
+IGL_INLINE void Renderer::Animate() {
+	if (scn->animation) {
+		scn->IKSolver();
+	}
+	
+}
+
 IGL_INLINE void Renderer::draw( GLFWwindow* window)
 {
 	using namespace std;
@@ -66,11 +73,11 @@ IGL_INLINE void Renderer::draw( GLFWwindow* window)
 		{
 			if (mesh.is_visible & core.id)
 			{
-				core.draw(scn->MakeTrans(),mesh);
+				Eigen::Matrix4f sceneAndParents = (scn->MakeTrans() * scn->data_list[mesh.id].ParentTrans());
+				core.draw(sceneAndParents,mesh);
 			}
 		}
 	}
-
 }
 
 void Renderer::SetScene(igl::opengl::glfw::Viewer* viewer)
@@ -96,18 +103,33 @@ void Renderer::UpdatePosition(double xpos, double ypos)
 
 void Renderer::MouseProcessing(int button)
 {
-	
+	// Assignment 3 changes
 	if (button == 1)
 	{
+		if (scn->selected_data_index > 0)
+		{
+			scn->data_list[1].MyTranslate(Eigen::Vector3f(-xrel / 100.0f, 0, 0));
+			scn->data_list[1].MyTranslate(Eigen::Vector3f(0, yrel / 100.0f, 0));
+		}
+		else {
+			scn->data().MyTranslate(Eigen::Vector3f(-xrel / 100.0f, 0, 0));
+			scn->data().MyTranslate(Eigen::Vector3f(0, yrel / 100.0f, 0));
+		}
 
-		scn->data().MyTranslate(Eigen::Vector3f(-xrel / 2000.0f, 0, 0));
-		scn->data().MyTranslate(Eigen::Vector3f(0,yrel / 2000.0f,0));
 		
 	}
 	else
 	{
-		scn->data().MyRotate(Eigen::Vector3f(1,0,0),xrel / 180.0f);
-		scn->data().MyRotate(Eigen::Vector3f(0, 0,1),yrel / 180.0f);
+		if (scn->scene_selected) {
+			scn->MyRotate(Eigen::Vector3f(1, 0, 0), xrel / 180.0f);
+			scn->MyRotate(Eigen::Vector3f(0, 0, 1), yrel / 180.0f);
+		}
+		else {
+			scn->data().MyRotate(Eigen::Vector3f(1, 0, 0), xrel / 180.0f);
+			scn->data().MyRotate(Eigen::Vector3f(0, 0, 1), yrel / 180.0f);
+		}
+
+		
 	}
 	
 }
@@ -121,7 +143,6 @@ Renderer::~Renderer()
 bool Renderer::Picking(double newx, double newy)
 {
 		int fid;
-		//Eigen::MatrixXd C = Eigen::MatrixXd::Constant(scn->data().F.rows(), 3, 1);
 		Eigen::Vector3f bc;
 		double x = newx;
 		double y = core().viewport(3) - newy;
@@ -147,7 +168,7 @@ float Renderer::toothPicking(double newx, double newy)
 	Eigen::Matrix4f view = Eigen::Matrix4f::Identity();
 	igl::look_at(core().camera_eye, core().camera_center, core().camera_up, view);
 	view = view * (core().trackball_angle * Eigen::Scaling(core().camera_zoom * core().camera_base_zoom)
-		* Eigen::Translation3f(core().camera_translation + core().camera_base_translation)).matrix() * scn->MakeTrans() * scn->data().MakeTrans();
+		* Eigen::Translation3f(core().camera_translation + core().camera_base_translation)).matrix() * scn->MakeTrans() * scn->data().ParentTrans() *scn->data().MakeTrans();
 	if (igl::unproject_onto_mesh(Eigen::Vector2f(x, y), view,
 		core().proj, core().viewport, scn->data().V, scn->data().F, fid, bc))
 	{

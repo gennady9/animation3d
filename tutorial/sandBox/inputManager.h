@@ -31,10 +31,12 @@ static void glfw_mouse_press(GLFWwindow* window, int button, int action, int mod
 		{
 			std::cout << "not found " << std::endl;
 			scn->selected_data_index = savedIndx;
+			scn->scene_selected = true;
 		}
 		else {
 			std::cout << "found " << closestObject << std::endl;
 			scn->selected_data_index = closestObject;
+			scn->scene_selected = false;
 		}
 		rndr->UpdatePosition(x2, y2);
 
@@ -131,7 +133,15 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 		case 'T':
 		case 't':
 		{
-			rndr->core().toggle(scn->data().show_faces);
+			//rndr->core().toggle(scn->data().show_faces);
+			std::cout << "arm tip position = " << (scn->data_list[4].ParentTrans() * scn->data_list[4].MakeTrans() * Eigen::Vector4f(0, +0.8, 0, 1)).transpose() << std::endl;
+			break;
+		}
+		case 'D':
+		case 'd':
+		{
+			Eigen::RowVector4f spherePos = (scn->data_list[0].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
+			std::cout << "destination position = " << spherePos << std::endl;
 			break;
 		}
 		case '1':
@@ -159,16 +169,47 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 			scn->data().decimationReset();
 			break;
 		}
-		case ' ':
+		case 'E':
+		case 'e':
 		{
 			scn->data().decimateEdges();
 			
 			break;
 		}
+		case ' ':
+		{
+			if (scn->sphereReachable()) {
+				scn->animation = !scn->animation;
+			}
+			else {
+				std::cout << "can't reach" << std::endl;
+			}
+			
+			break;
+		}
+		case GLFW_KEY_RIGHT:
+		{
+			scn->data().MyRotate(Vector3f(0, 1, 0), -0.1);
+			break;
+		}
+		case GLFW_KEY_LEFT:
+		{
+			scn->data().MyRotate(Vector3f(0, 1, 0), 0.1);
+			break;
+		}
+		case GLFW_KEY_DOWN:
+		{
+			scn->data().MyRotate(Vector3f(1, 0, 0), -0.1);
+			break;
+		}
+		case GLFW_KEY_UP:
+		{
+			scn->data().MyRotate(Vector3f(1, 0, 0), 0.1);
+			break;
+		}
 		default: break;//do nothing
 		}
 }
-
 
 void Init(Display& display)
 {

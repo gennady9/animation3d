@@ -182,6 +182,8 @@ public:
   IGL_INLINE void decimationReset();
 
 
+  // Assignment 3
+
 
   // Per face attributes
   Eigen::MatrixXd F_normals; // One normal per face
