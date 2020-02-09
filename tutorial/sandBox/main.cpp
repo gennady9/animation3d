@@ -2,7 +2,6 @@
 #include "igl/opengl/glfw/renderer.h"
 #include "tutorial/sandBox/inputManager.h"
 
-#define NUM_OF_CYL 4
 
 int main(int argc, char* argv[])
 {
