@@ -99,6 +99,7 @@ public:
 			(selected_core_index + core_list.size() + (unicode_key == ']' ? 1 : -1)) % core_list.size();
 
 	}
+	IGL_INLINE void setSelectedCore(int index);
 
 private:
 	// Stores all the viewing options

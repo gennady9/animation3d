@@ -158,7 +158,7 @@ bool Renderer::Picking(double newx, double newy)
 		return false;
 	
 }
-
+// Project functions
 float Renderer::toothPicking(double newx, double newy)
 {
 	int fid;
@@ -201,7 +201,10 @@ float Renderer::toothPicking(double newx, double newy)
 	return 0;
 
 }
-
+IGL_INLINE void Renderer::setSelectedCore(int index) {
+	assert((index >= 0 && index < core_list.size()) && "index should be in bounds");
+	selected_core_index = index;
+}
 
 IGL_INLINE void Renderer::resize(GLFWwindow* window,int w, int h)
 	{
