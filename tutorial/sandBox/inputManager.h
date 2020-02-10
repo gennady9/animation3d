@@ -37,6 +37,15 @@ static void glfw_mouse_press(GLFWwindow* window, int button, int action, int mod
 			std::cout << "found " << closestObject << std::endl;
 			scn->selected_data_index = closestObject;
 			scn->scene_selected = false;
+
+			// Project code
+			if (scn->selected_data_index == 0 || scn->selected_data_index > 10) { // not snake selected
+				//IKSolver
+				//if (scn->objectReachable()) {
+				scn->animation_id = scn->selected_data_index;
+				scn->animation = !scn->animation;
+				//}
+			}
 		}
 		rndr->UpdatePosition(x2, y2);
 
@@ -134,14 +143,14 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 		case 't':
 		{
 			//rndr->core().toggle(scn->data().show_faces);
-			std::cout << "arm tip position = " << (scn->data_list[4].ParentTrans() * scn->data_list[4].MakeTrans() * Eigen::Vector4f(0, +0.8, 0, 1)).transpose() << std::endl;
+			//std::cout << "arm tip position = " << (scn->data_list[4].ParentTrans() * scn->data_list[4].MakeTrans() * Eigen::Vector4f(0, +0.8, 0, 1)).transpose() << std::endl;
 			break;
 		}
 		case 'D':
 		case 'd':
 		{
-			Eigen::RowVector4f spherePos = (scn->data_list[0].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
-			std::cout << "destination position = " << spherePos << std::endl;
+			//Eigen::RowVector4f spherePos = (scn->data_list[0].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
+			//std::cout << "destination position = " << spherePos << std::endl;
 			break;
 		}
 		case '1':
@@ -178,13 +187,13 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 		}
 		case ' ':
 		{
-			if (scn->sphereReachable()) {
+			/*if (scn->sphereReachable()) {
 				scn->animation = !scn->animation;
 			}
 			else {
 				std::cout << "can't reach" << std::endl;
 			}
-			
+			*/
 			break;
 		}
 		case GLFW_KEY_RIGHT:

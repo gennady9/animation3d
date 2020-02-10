@@ -121,9 +121,10 @@ namespace glfw
 	IGL_INLINE void load_meshes_from_config_file(const std::string& mesh_file_name);
 	// Assignment 3
 	IGL_INLINE void update_initial_positions();
-	IGL_INLINE bool sphereReachable();
-	IGL_INLINE void IKSolver();
+	IGL_INLINE bool objectReachable(int object_id);
+	IGL_INLINE void IKSolver(int selected);
 	bool animation = false;
+    int animation_id = -1;
 	
 
 

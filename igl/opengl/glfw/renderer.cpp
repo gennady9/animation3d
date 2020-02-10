@@ -38,7 +38,7 @@ next_core_id(2)
 
 IGL_INLINE void Renderer::Animate() {
 	if (scn->animation) {
-		scn->IKSolver();
+		scn->IKSolver(scn->animation_id);
 	}
 	
 }
@@ -66,9 +66,24 @@ IGL_INLINE void Renderer::draw( GLFWwindow* window)
 	{
 		core.clear_framebuffers();
 	}
-
 	for (auto& core : core_list)
 	{
+		if (core.id == 2) {
+			for (size_t i = 0; i < scn->data_list.size(); i++)
+			{
+				//scn->data_list[i].set_visible(true, core.id);
+				//core.toggle(scn->data_list[i].show_lines);
+				//core(right_view).toggle(scn->data_list[i].show_lines);
+				core.set(scn->data_list[i].show_faces, true); // TODO: delete when finished
+			}
+			Vector4f arm_tip_4 = scn->data_list[10].ParentTrans() * scn->data_list[10].MakeTrans() * Eigen::Vector4f(0, +0.8, 0, 1);
+			Vector3f arm_tip;
+			arm_tip << arm_tip_4(0), arm_tip_4(1), arm_tip_4(2);
+			core.camera_eye = arm_tip;
+			core.camera_center = Vector3f(0, -1, 0);
+		}
+
+
 		for (auto& mesh : scn->data_list)
 		{
 			if (mesh.is_visible & core.id)
@@ -106,14 +121,14 @@ void Renderer::MouseProcessing(int button)
 	// Assignment 3 changes
 	if (button == 1)
 	{
-		if (scn->selected_data_index > 0)
+		if (scn->selected_data_index >= 1 && scn->selected_data_index <= 10) // snake selected
 		{
-			scn->data_list[1].MyTranslate(Eigen::Vector3f(-xrel / 100.0f, 0, 0));
-			scn->data_list[1].MyTranslate(Eigen::Vector3f(0, yrel / 100.0f, 0));
+			scn->data_list[1].MyTranslate(Eigen::Vector3f(-xrel / 35.0f, 0, 0));
+			scn->data_list[1].MyTranslate(Eigen::Vector3f(0, yrel / 35.0f, 0));
 		}
 		else {
-			scn->data().MyTranslate(Eigen::Vector3f(-xrel / 100.0f, 0, 0));
-			scn->data().MyTranslate(Eigen::Vector3f(0, yrel / 100.0f, 0));
+			scn->data().MyTranslate(Eigen::Vector3f(-xrel / 35.0f, 0, 0));
+			scn->data().MyTranslate(Eigen::Vector3f(0, yrel / 35.0f, 0));
 		}
 
 		
@@ -125,8 +140,14 @@ void Renderer::MouseProcessing(int button)
 			scn->MyRotate(Eigen::Vector3f(0, 0, 1), yrel / 180.0f);
 		}
 		else {
-			scn->data().MyRotate(Eigen::Vector3f(1, 0, 0), xrel / 180.0f);
-			scn->data().MyRotate(Eigen::Vector3f(0, 0, 1), yrel / 180.0f);
+			if (scn->selected_data_index >= 1 && scn->selected_data_index <= 10) { // snake selected
+				scn->data().MyRotate(Eigen::Vector3f(1, 0, 0), xrel / 180.0f);
+				scn->data().MyRotate(Eigen::Vector3f(0, 0, 1), yrel / 180.0f);
+			}
+			else {
+				// there is no reason to rotate object that are not the snake or part of the scene
+			}
+
 		}
 
 		

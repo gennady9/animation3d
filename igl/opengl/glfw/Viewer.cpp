@@ -54,7 +54,7 @@
 #define ARM_LENGTH (NUM_OF_CYL * CYL_HEIGHT)
 #define delta 0.1
 
-#include <igl/opengl/glfw/imgui/ImGuiMenu.h>
+//#include <igl/opengl/glfw/imgui/ImGuiMenu.h>
 
 // Internal global variables used for glfw event handling
 //static igl::opengl::glfw::Viewer * __viewer;
@@ -190,7 +190,6 @@ namespace glfw
       data().set_uv(UV_V,UV_F);
 	  data().F_backup = F;
 	  data().V_backup = V;
-
     }
     else
     {
@@ -471,14 +470,15 @@ namespace glfw
 		  
 	  }
   }
-  IGL_INLINE bool Viewer::sphereReachable() {
+  IGL_INLINE bool Viewer::objectReachable(int object_id) {
 	  Eigen::RowVector4f armOriginPos = (data_list[ARM_START].MakeTrans() * Eigen::Vector4f(0, -0.8, 0, 1));
-	  Eigen::RowVector4f spherePos = (data_list[SPHERE_ID].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
+	  Eigen::RowVector4f spherePos = (data_list[object_id].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
 	  float distance = (spherePos - armOriginPos).norm();
 	  return (distance <= ARM_LENGTH);
   }
 
-  IGL_INLINE void Viewer::IKSolver() {
+  IGL_INLINE void Viewer::IKSolver(int animation_id) {
+      if (animation_id < 0 || !objectReachable(animation_id)) { animation = false; return; }
 	  //Eigen::RowVector4f armTipPos = (data_list[NUM_OF_CYL].ParentTrans() * data_list[NUM_OF_CYL].MakeTrans() * Eigen::Vector4f(0, +0.8, 0, 1));
 	  Eigen::RowVector4f spherePos = (data_list[SPHERE_ID].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
 
@@ -499,16 +499,17 @@ namespace glfw
 		  float distance = (spherePos - E).norm();
 		  if (distance < delta) {
 			  animation = false;
+              animation_id = -1;
 			  return;
 		  }
-		  std::cout << "distance " << distance << std::endl;
+		  //std::cout << "distance " << distance << std::endl;
 		  float angleBetween = acos(cosAngle);
 		  Vector3f RE3 , RD3;
 		  RE3 << RE(0), RE(1), RE(2);
 		  RD3 << RD(0), RD(1), RD(2);
 		  Eigen::Vector3f rotationAxis = (RE3.cross(RD3)).normalized();
 		 
-		  data_list[i].MyRotate(rotationAxis, angleBetween);
+		  data_list[i].MyRotate(rotationAxis, angleBetween/5);
 	  }
   }
 
