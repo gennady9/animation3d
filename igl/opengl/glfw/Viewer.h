@@ -141,7 +141,8 @@ public:
 	bool scene_selected;
     int next_data_id;
 
-
+    // Project
+    std::function<bool(Viewer & viewer)> callback_init;
     // Assignment 2: mesh decimation
 
 	//std::vector<MeshData> mesh_data_list;

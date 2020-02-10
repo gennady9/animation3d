@@ -46,7 +46,7 @@
 
 
 // Assignment 3
-#define NUM_OF_CYL 4
+#define NUM_OF_CYL 10
 #define CYL_HEIGHT 1.6
 #define CYL_HALF 0.8
 #define SPHERE_ID 0
@@ -217,7 +217,7 @@ namespace glfw
 
 	
 	// Assignment 2
-	data().decimationReset();
+	//data().decimationReset();
 
 	// Assignment 3 changes
 	/*
@@ -433,13 +433,13 @@ namespace glfw
 
 		// Assignment 3
 		load_mesh_from_file(sphere_path);
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < NUM_OF_CYL; i++) {
 			load_mesh_from_file(cylinder_path);
 		}
 		// Assignment 2 Edge decimation
-	    for (size_t i = 0; i < data_list.size(); ++i) { 
-		    data_list[i].decimationReset();
-	    }
+	    //for (size_t i = 0; i < data_list.size(); ++i) { 
+		//    data_list[i].decimationReset();
+	    //}
 
 		// Assignment 3
 		update_initial_positions();
