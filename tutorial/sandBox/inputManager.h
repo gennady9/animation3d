@@ -39,12 +39,9 @@ static void glfw_mouse_press(GLFWwindow* window, int button, int action, int mod
 			scn->scene_selected = false;
 
 			// Project code
-			if (scn->selected_data_index == 0 || scn->selected_data_index > 10) { // not snake selected
-				//IKSolver
-				//if (scn->objectReachable()) {
+			if (scn->selected_data_index < 0 || scn->selected_data_index > 9) { // not snake selected
 				scn->animation_id = scn->selected_data_index;
-				scn->animation = !scn->animation;
-				//}
+				scn->ik_animation = !scn->ik_animation;
 			}
 		}
 		rndr->UpdatePosition(x2, y2);
@@ -151,6 +148,12 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 		{
 			//Eigen::RowVector4f spherePos = (scn->data_list[0].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
 			//std::cout << "destination position = " << spherePos << std::endl;
+			break;
+		}
+		case 'C':
+		case 'c':
+		{
+			scn->createFood();
 			break;
 		}
 		case '1':

@@ -49,8 +49,9 @@
 #define NUM_OF_CYL 10
 #define CYL_HEIGHT 1.6
 #define CYL_HALF 0.8
-#define SPHERE_ID 0
-#define ARM_START 1
+#define SPHERE_ID 10
+#define SNAKE_TAIL 0
+#define SNAKE_HEAD 9
 #define ARM_LENGTH (NUM_OF_CYL * CYL_HEIGHT)
 #define delta 0.1
 
@@ -75,7 +76,7 @@ namespace glfw
 	  //data().show_overlay_depth = false;
 	  //data().point_size = 10;
 	  //data().line_width = 2;
-	  animation = false;
+	  ik_animation = false;
   }
 
   //IGL_INLINE void Viewer::init_plugins()
@@ -416,10 +417,10 @@ namespace glfw
 
   IGL_INLINE void Viewer::load_meshes_from_config_file(const std::string& mesh_file_name_string) {
 		std::ifstream file(mesh_file_name_string);
-		std::string cylinder_path, sphere_path;
+		std::string cylinder_path;
 		if (file.is_open()) {
 			getline(file, cylinder_path); // should be cylinder path
-			getline(file, sphere_path); // should be sphere path
+			getline(file, foodPath); // should be sphere path
 			//while (getline(file, line)) {
 			//	load_mesh_from_file(line);
 			//}
@@ -431,10 +432,16 @@ namespace glfw
 		}
 
 		// Assignment 3
-		load_mesh_from_file(sphere_path);
 		for (int i = 0; i < NUM_OF_CYL; i++) {
 			load_mesh_from_file(cylinder_path);
 		}
+        createFood();
+        //erase_mesh(0);
+        //load_mesh_from_file(sphere_path);
+        //load_mesh_from_file(sphere_path);
+        //erase_mesh(11);
+
+        //data_list[0]
 		// Assignment 2 Edge decimation
 	    //for (size_t i = 0; i < data_list.size(); ++i) { 
 		//    data_list[i].decimationReset();
@@ -446,9 +453,9 @@ namespace glfw
   }
 
   IGL_INLINE void Viewer::update_initial_positions() {
-	  data_list[SPHERE_ID].MyTranslate(Eigen::Vector3f(5,0,0)); // Sphere positioning
-	  data_list[ARM_START].MyTranslate((Eigen::Vector3f(0, -CYL_HALF, 0)));
-	  for (int i = 1; i <= NUM_OF_CYL; i++) {
+	  //data_list[SPHERE_ID].MyTranslate(Eigen::Vector3f(5,0,0)); // Sphere positioning
+	  data_list[SNAKE_TAIL].MyTranslate((Eigen::Vector3f(0, -CYL_HALF, 0)));
+	  for (size_t i = 0; i < NUM_OF_CYL; i++) {
 		  data_list[i].MyTranslate((Eigen::Vector3f(0, CYL_HEIGHT, 0)));
 		  data_list[i].setCenterOfRot(Eigen::Vector3f(0, -CYL_HALF, 0));
 
@@ -458,32 +465,32 @@ namespace glfw
 		  data_list[i].point_size = 10;
 		  data_list[i].line_width = 2;
 		  data_list[i].add_points(Eigen::RowVector3d(0, -0.8, 0), Eigen::RowVector3d(0, 0, 1));
-		  if (i < NUM_OF_CYL) {
+		  if (i < SNAKE_HEAD) {
 			data_list[i].add_edges(Eigen::RowVector3d(-1.6, +0.8, 0), Eigen::RowVector3d(1.6,+0.8,0), Eigen::RowVector3d(1, 0, 0)); // X axis - red
 			data_list[i].add_edges(Eigen::RowVector3d(0, -0.8, 0), Eigen::RowVector3d(0, 2.4, 0), Eigen::RowVector3d(0, 1, 0)); // Y axis - green
 			data_list[i].add_edges(Eigen::RowVector3d(0, +0.8, -1.6), Eigen::RowVector3d(0, +0.8, 1.6), Eigen::RowVector3d(0, 0, 1)); // Z axis - blue
 		  }
-		  if(i > 1){
+		  if(i > 0){
 			  Movable* parent = &data_list[i - 1];
 			  data_list[i].setParent(parent);
-		  }
+          }
 		  
 	  }
   }
   IGL_INLINE bool Viewer::objectReachable(int object_id) {
-	  Eigen::RowVector4f armOriginPos = (data_list[ARM_START].MakeTrans() * Eigen::Vector4f(0, -0.8, 0, 1));
+	  Eigen::RowVector4f armOriginPos = (data_list[SNAKE_TAIL].MakeTrans() * Eigen::Vector4f(0, -0.8, 0, 1));
 	  Eigen::RowVector4f spherePos = (data_list[object_id].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
 	  float distance = (spherePos - armOriginPos).norm();
 	  return (distance <= ARM_LENGTH);
   }
 
   IGL_INLINE void Viewer::IKSolver(int animation_id) {
-      if (animation_id < 0 || !objectReachable(animation_id)) { animation = false; return; }
+      if (animation_id < 0 || !objectReachable(animation_id)) { ik_animation = false; return; }
 	  //Eigen::RowVector4f armTipPos = (data_list[NUM_OF_CYL].ParentTrans() * data_list[NUM_OF_CYL].MakeTrans() * Eigen::Vector4f(0, +0.8, 0, 1));
-	  Eigen::RowVector4f spherePos = (data_list[SPHERE_ID].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
+	  Eigen::RowVector4f spherePos = (data_list[animation_id].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
 
-	  for (int i = NUM_OF_CYL; i > 0; i--) {
-		  Eigen::RowVector4f E = (data_list[NUM_OF_CYL].ParentTrans() * data_list[NUM_OF_CYL].MakeTrans() * Eigen::Vector4f(0, +0.8, 0, 1));
+	  for (int i = SNAKE_HEAD; i >= 0; i--) {
+		  Eigen::RowVector4f E = (data_list[SNAKE_HEAD].ParentTrans() * data_list[SNAKE_HEAD].MakeTrans() * Eigen::Vector4f(0, +0.8, 0, 1));
 		  Eigen::RowVector4f R = (data_list[i].ParentTrans() * data_list[i].MakeTrans() * Eigen::Vector4f(0, -0.8, 0, 1));
 		  const Eigen::RowVector4f D = spherePos;
 		  const Eigen::RowVector4f RE = (E - R).normalized();
@@ -498,7 +505,7 @@ namespace glfw
 		  }
 		  float distance = (spherePos - E).norm();
 		  if (distance < delta) {
-			  animation = false;
+			  ik_animation = false;
               animation_id = -1;
 			  return;
 		  }
@@ -509,11 +516,17 @@ namespace glfw
 		  RD3 << RD(0), RD(1), RD(2);
 		  Eigen::Vector3f rotationAxis = (RE3.cross(RD3)).normalized();
 		 
-		  data_list[i].MyRotate(rotationAxis, angleBetween/5);
+		  data_list[i].MyRotate(rotationAxis, angleBetween);
 	  }
   }
 
+  IGL_INLINE void Viewer::createFood() {
+      load_mesh_from_file(foodPath);
+      data_list[data().id].setParent(NULL); // TODO: delete this
+      //std::cout << "food new id=" << data().id;
 
+      data_list[data().id].MyTranslate(Eigen::Vector3f(rand() % 10 + 1, rand() % 10 + 1, rand() % 10 + 1)); // Sphere positioning
+  }
 
 } // end namespace
 } // end namespace
