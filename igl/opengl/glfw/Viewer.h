@@ -124,7 +124,10 @@ namespace glfw
 	IGL_INLINE bool objectReachable(int object_id);
 	IGL_INLINE void IKSolver(int selected);
 	IGL_INLINE void createFood();
+    IGL_INLINE void removeFood(int food_id);
+    IGL_INLINE void foodAnimation();
 	bool ik_animation = false;
+	bool food_animation = true;
     int animation_id = -1;
     std::string foodPath;
 	

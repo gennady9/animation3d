@@ -40,6 +40,9 @@ IGL_INLINE void Renderer::Animate() {
 	if (scn->ik_animation) {
 		scn->IKSolver(scn->animation_id);
 	}
+	if (scn->food_animation) {
+		scn->foodAnimation();
+	}
 	
 }
 

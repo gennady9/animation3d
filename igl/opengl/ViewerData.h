@@ -173,6 +173,9 @@ public:
 									   // each cell contains vector of type int that contains all the indexes of faces that has vertex i.
   std::vector< Eigen::MatrixXd > V_Q; // Q matrice for each V
 
+  // Project
+  Eigen::Vector3f direction;
+  Eigen::Vector3f speed;
 
   IGL_INLINE void decimateEdges();
   IGL_INLINE void calculate_v_faces();

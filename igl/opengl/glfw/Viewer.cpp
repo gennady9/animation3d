@@ -397,7 +397,9 @@ namespace glfw
     if(selected_data_index >= index && selected_data_index > 0)
     {
       selected_data_index--;
+    
     }
+
 
     return true;
   }
@@ -479,8 +481,8 @@ namespace glfw
   }
   IGL_INLINE bool Viewer::objectReachable(int object_id) {
 	  Eigen::RowVector4f armOriginPos = (data_list[SNAKE_TAIL].MakeTrans() * Eigen::Vector4f(0, -0.8, 0, 1));
-	  Eigen::RowVector4f spherePos = (data_list[object_id].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
-	  float distance = (spherePos - armOriginPos).norm();
+	  Eigen::RowVector4f objectPos = (data_list[object_id].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
+	  float distance = (objectPos - armOriginPos).norm();
 	  return (distance <= ARM_LENGTH);
   }
 
@@ -506,6 +508,7 @@ namespace glfw
 		  float distance = (spherePos - E).norm();
 		  if (distance < delta) {
 			  ik_animation = false;
+              removeFood(animation_id);
               animation_id = -1;
 			  return;
 		  }
@@ -522,11 +525,30 @@ namespace glfw
 
   IGL_INLINE void Viewer::createFood() {
       load_mesh_from_file(foodPath);
-      data_list[data().id].setParent(NULL); // TODO: delete this
-      //std::cout << "food new id=" << data().id;
-
-      data_list[data().id].MyTranslate(Eigen::Vector3f(rand() % 10 + 1, rand() % 10 + 1, rand() % 10 + 1)); // Sphere positioning
+      data_list[data_list.size() - 1].setParent(NULL); // TODO: delete this
+      data_list[data_list.size() - 1].MyTranslate(Eigen::Vector3f(rand() % 10 - 10, rand() % 10 + 1, 0)); // Food positioning
   }
+
+  IGL_INLINE void Viewer::removeFood(int food_id) {
+      erase_mesh(food_id);
+      // TODO: add sound, restore snake state(?), create some effect
+  }
+
+  IGL_INLINE void Viewer::foodAnimation() {
+      for (auto& mesh : data_list) {
+          if (mesh.id > SNAKE_HEAD) { // if not snake
+              mesh.MyTranslate(mesh.direction);
+              Eigen::RowVector4f objectPos = (mesh.MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
+              if (objectPos(1) <= 0 || objectPos(1) > 16) { // y <= 0
+                  mesh.direction << mesh.direction(0), -mesh.direction(1), mesh.direction(2);
+              }
+              if (objectPos(0) > 16 || objectPos(0) < -16) {
+                  mesh.direction << -mesh.direction(0), mesh.direction(1), mesh.direction(2);
+              }
+          }
+      }
+  }
+
 
 } // end namespace
 } // end namespace

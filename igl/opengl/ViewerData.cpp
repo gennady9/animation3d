@@ -390,7 +390,11 @@ IGL_INLINE void igl::opengl::ViewerData::clear()
   labels_strings.clear();
 
   face_based = false;
-
+  float speed_x = (rand() % 50 + 2.0) / 800.0;
+  float speed_y = (rand() % 50 + 2.0) / 800.0; // rand() % 10 + 1
+  speed = Eigen::Vector3f(speed_x, speed_y, 0);//(rand() * 30 + 1) / 1000);
+  //std::cout << "speed  = " << speed << std::endl;
+  direction = Eigen::Vector3f(speed(0), -speed(1), 0);//0.02f, -0.02f, 0);
 }
 using namespace Eigen; // Assignment 2
 IGL_INLINE void igl::opengl::ViewerData::decimationReset() {
