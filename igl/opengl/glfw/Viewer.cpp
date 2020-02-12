@@ -54,6 +54,8 @@
 #define SNAKE_HEAD 9
 #define ARM_LENGTH (NUM_OF_CYL * CYL_HEIGHT)
 #define delta 0.1
+#include <igl/png/readPNG.h>
+#include <igl\jet.h>
 
 //#include <igl/opengl/glfw/imgui/ImGuiMenu.h>
 
@@ -103,7 +105,8 @@ namespace glfw
   {
     data_list.front().id = 0;
 
-  
+    // Project
+    score = 0;
 
     // Temporary variables initialization
    // down = false;
@@ -419,10 +422,11 @@ namespace glfw
 
   IGL_INLINE void Viewer::load_meshes_from_config_file(const std::string& mesh_file_name_string) {
 		std::ifstream file(mesh_file_name_string);
-		std::string cylinder_path;
+        std::string cylinder_path, snake_head_path;
 		if (file.is_open()) {
 			getline(file, cylinder_path); // should be cylinder path
 			getline(file, foodPath); // should be sphere path
+            getline(file, snake_head_path); // should be snake head path
 			//while (getline(file, line)) {
 			//	load_mesh_from_file(line);
 			//}
@@ -434,9 +438,10 @@ namespace glfw
 		}
 
 		// Assignment 3
-		for (int i = 0; i < NUM_OF_CYL; i++) {
+		for (int i = 0; i < SNAKE_HEAD; i++) {
 			load_mesh_from_file(cylinder_path);
 		}
+        load_mesh_from_file(snake_head_path);
         createFood();
         //erase_mesh(0);
         //load_mesh_from_file(sphere_path);
@@ -457,21 +462,27 @@ namespace glfw
   IGL_INLINE void Viewer::update_initial_positions() {
 	  //data_list[SPHERE_ID].MyTranslate(Eigen::Vector3f(5,0,0)); // Sphere positioning
 	  data_list[SNAKE_TAIL].MyTranslate((Eigen::Vector3f(0, -CYL_HALF, 0)));
+      //data_list[SNAKE_HEAD].MyRotate(Vector3f(1,0,0), 90);
+      //data_list[SNAKE_HEAD].MyScale(Eigen::Vector3f(0.5, 0.5, 0.5));//1 - 500 * 0.01, 1 - 500 * 0.01, 1 - 500 * 0.01));
+      //data_list[SNAKE_HEAD].MyTranslate(Vector3f(0, 1, -0.7));
+      // Texturing snake
+      Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> R, G, B, A;
+      // Read the PNG
+      igl::png::readPNG("snakepng.png", R, G, B, A);
+
+
 	  for (size_t i = 0; i < NUM_OF_CYL; i++) {
 		  data_list[i].MyTranslate((Eigen::Vector3f(0, CYL_HEIGHT, 0)));
 		  data_list[i].setCenterOfRot(Eigen::Vector3f(0, -CYL_HALF, 0));
 
+          data_list[i].show_texture = true;
+          data_list[i].set_texture(R, G, B);
+          /* Rainbow color
+          Eigen::MatrixXd C;
+          Eigen::VectorXd Z = data_list[i].V.col(2);
+          igl::jet(Z, true, C);
+          data_list[i].set_colors(C);*/
 
-		  // Points drawing related
-		  data_list[i].show_overlay_depth = false;
-		  data_list[i].point_size = 10;
-		  data_list[i].line_width = 2;
-		  data_list[i].add_points(Eigen::RowVector3d(0, -0.8, 0), Eigen::RowVector3d(0, 0, 1));
-		  if (i < SNAKE_HEAD) {
-			data_list[i].add_edges(Eigen::RowVector3d(-1.6, +0.8, 0), Eigen::RowVector3d(1.6,+0.8,0), Eigen::RowVector3d(1, 0, 0)); // X axis - red
-			data_list[i].add_edges(Eigen::RowVector3d(0, -0.8, 0), Eigen::RowVector3d(0, 2.4, 0), Eigen::RowVector3d(0, 1, 0)); // Y axis - green
-			data_list[i].add_edges(Eigen::RowVector3d(0, +0.8, -1.6), Eigen::RowVector3d(0, +0.8, 1.6), Eigen::RowVector3d(0, 0, 1)); // Z axis - blue
-		  }
 		  if(i > 0){
 			  Movable* parent = &data_list[i - 1];
 			  data_list[i].setParent(parent);
@@ -488,13 +499,12 @@ namespace glfw
 
   IGL_INLINE void Viewer::IKSolver(int animation_id) {
       if (animation_id < 0 || !objectReachable(animation_id)) { ik_animation = false; return; }
-	  //Eigen::RowVector4f armTipPos = (data_list[NUM_OF_CYL].ParentTrans() * data_list[NUM_OF_CYL].MakeTrans() * Eigen::Vector4f(0, +0.8, 0, 1));
-	  Eigen::RowVector4f spherePos = (data_list[animation_id].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
+	  Eigen::RowVector4f objectPos = (data_list[animation_id].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
 
 	  for (int i = SNAKE_HEAD; i >= 0; i--) {
 		  Eigen::RowVector4f E = (data_list[SNAKE_HEAD].ParentTrans() * data_list[SNAKE_HEAD].MakeTrans() * Eigen::Vector4f(0, +0.8, 0, 1));
 		  Eigen::RowVector4f R = (data_list[i].ParentTrans() * data_list[i].MakeTrans() * Eigen::Vector4f(0, -0.8, 0, 1));
-		  const Eigen::RowVector4f D = spherePos;
+		  const Eigen::RowVector4f D = objectPos;
 		  const Eigen::RowVector4f RE = (E - R).normalized();
 		  const Eigen::RowVector4f RD = (D - R).normalized();
 
@@ -505,7 +515,7 @@ namespace glfw
 		  if (cosAngle < -1){
 			  cosAngle = -1;
 		  }
-		  float distance = (spherePos - E).norm();
+		  float distance = (objectPos - E).norm();
 		  if (distance < delta) {
 			  ik_animation = false;
               removeFood(animation_id);
@@ -527,6 +537,13 @@ namespace glfw
       load_mesh_from_file(foodPath);
       data_list[data_list.size() - 1].setParent(NULL); // TODO: delete this
       data_list[data_list.size() - 1].MyTranslate(Eigen::Vector3f(rand() % 10 - 10, rand() % 10 + 1, 0)); // Food positioning
+      
+      Eigen::MatrixXd C;
+      Eigen::VectorXd Z = data_list[data_list.size() - 1].V.col(2);
+
+      // Compute per-vertex colors
+      igl::jet(Z, true, C);
+      data_list[data_list.size() - 1].set_colors(C);
   }
 
   IGL_INLINE void Viewer::removeFood(int food_id) {
@@ -538,6 +555,7 @@ namespace glfw
       for (auto& mesh : data_list) {
           if (mesh.id > SNAKE_HEAD) { // if not snake
               mesh.MyTranslate(mesh.direction);
+              mesh.MyRotate(mesh.direction.normalized(), 0.1f);
               Eigen::RowVector4f objectPos = (mesh.MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
               if (objectPos(1) <= 0 || objectPos(1) > 16) { // y <= 0
                   mesh.direction << mesh.direction(0), -mesh.direction(1), mesh.direction(2);

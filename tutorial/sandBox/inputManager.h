@@ -1,6 +1,5 @@
 #pragma once
 #include "igl/opengl/glfw/Display.h"
-
 static void glfw_mouse_press(GLFWwindow* window, int button, int action, int modifier)
 {
 
@@ -146,8 +145,36 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 		case 'D':
 		case 'd':
 		{
-			//Eigen::RowVector4f spherePos = (scn->data_list[0].MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
-			//std::cout << "destination position = " << spherePos << std::endl;
+
+
+			// Replace the mesh with a triangulated square
+			/*Eigen::MatrixXd V(4, 3);
+			V <<
+				-0.5, -0.5, 0,
+				0.5, -0.5, 0,
+				0.5, 0.5, 0,
+				-0.5, 0.5, 0;
+			Eigen::MatrixXi F(2, 3);
+			F <<
+				0, 1, 2,
+				2, 3, 0;
+			Eigen::MatrixXd UV(4, 2);
+			UV <<
+				0, 0,
+				1, 0,
+				1, 1,
+				0, 1;
+				
+			scn->data().clear();
+			scn->data().set_mesh(V, F);
+			scn->data().set_uv(UV);
+			rndr->core().align_camera_center(V);*/
+
+			// Use the image as a texture
+			//scn->data().grid_texture
+			//scn->data().show_texture = true;
+			//scn->data().set_texture
+			//scn->data().texture_A
 			break;
 		}
 		case 'C':
