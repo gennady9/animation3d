@@ -34,6 +34,8 @@
 // Assignment 2
 using namespace Eigen;
 #include <set>
+// Assignment 4
+#include <igl\AABB.h>
 
 namespace igl
 {
@@ -124,13 +126,17 @@ namespace glfw
 	IGL_INLINE bool objectReachable(int object_id);
 	IGL_INLINE void IKSolver(int selected);
 	IGL_INLINE void createFood();
+    IGL_INLINE void colorFood(int food_id);
     IGL_INLINE void removeFood(int food_id);
     IGL_INLINE void foodAnimation();
 	bool ik_animation = false;
 	bool food_animation = true;
     int animation_id = -1;
     std::string foodPath;
-	
+	// Assignment 4
+    IGL_INLINE void drawBox(int obj_id, Eigen::AlignedBox<double, 3>* box);
+    IGL_INLINE bool checkCollision(igl::AABB<Eigen::MatrixXd, 3>* Atree, igl::AABB<Eigen::MatrixXd, 3>* Btree);
+    bool collision = false;
 
 
 public:

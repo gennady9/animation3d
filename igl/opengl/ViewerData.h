@@ -24,6 +24,9 @@
 #include <igl/edge_flaps.h>
 #include <igl/shortest_edge_and_midpoint.h>
 
+// Assignment 4
+#include <igl/AABB.h>
+
 // Alec: This is a mesh class containing a variety of data types (normals,
 // overlays, material colors, etc.)
 //
@@ -185,8 +188,8 @@ public:
   IGL_INLINE void decimationReset();
 
 
-  // Assignment 3
-
+    // Assignment 4
+  igl::AABB<Eigen::MatrixXd, 3> tree;
 
   // Per face attributes
   Eigen::MatrixXd F_normals; // One normal per face

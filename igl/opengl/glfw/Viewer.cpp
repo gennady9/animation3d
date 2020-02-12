@@ -442,7 +442,9 @@ namespace glfw
 			load_mesh_from_file(cylinder_path);
 		}
         load_mesh_from_file(snake_head_path);
+        data_list[SNAKE_HEAD].tree.init(data_list[SNAKE_HEAD].V, data_list[SNAKE_HEAD].F);
         createFood();
+
         //erase_mesh(0);
         //load_mesh_from_file(sphere_path);
         //load_mesh_from_file(sphere_path);
@@ -465,9 +467,9 @@ namespace glfw
       //data_list[SNAKE_HEAD].MyRotate(Vector3f(1,0,0), 90);
       //data_list[SNAKE_HEAD].MyScale(Eigen::Vector3f(0.5, 0.5, 0.5));//1 - 500 * 0.01, 1 - 500 * 0.01, 1 - 500 * 0.01));
       //data_list[SNAKE_HEAD].MyTranslate(Vector3f(0, 1, -0.7));
+      
       // Texturing snake
       Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> R, G, B, A;
-      // Read the PNG
       igl::png::readPNG("snakepng.png", R, G, B, A);
 
 
@@ -515,8 +517,9 @@ namespace glfw
 		  if (cosAngle < -1){
 			  cosAngle = -1;
 		  }
-		  float distance = (objectPos - E).norm();
-		  if (distance < delta) {
+		  //float distance = (objectPos - E).norm();
+		  //if (distance < delta) {
+          if(checkCollision(&data_list[SNAKE_HEAD].tree, &data_list[animation_id].tree)){
 			  ik_animation = false;
               removeFood(animation_id);
               animation_id = -1;
@@ -535,15 +538,18 @@ namespace glfw
 
   IGL_INLINE void Viewer::createFood() {
       load_mesh_from_file(foodPath);
-      data_list[data_list.size() - 1].setParent(NULL); // TODO: delete this
-      data_list[data_list.size() - 1].MyTranslate(Eigen::Vector3f(rand() % 10 - 10, rand() % 10 + 1, 0)); // Food positioning
-      
-      Eigen::MatrixXd C;
-      Eigen::VectorXd Z = data_list[data_list.size() - 1].V.col(2);
+      int index = data_list.size() - 1;
+      data_list[index].setParent(NULL); // TODO: delete this
+      data_list[index].MyTranslate(Eigen::Vector3f(rand() % 10 - 10, rand() % 10 + 1, 0)); // Food positioning
+      data_list[index].tree.init(data_list[index].V, data_list[index].F);
 
-      // Compute per-vertex colors
+      colorFood(index);
+  }
+  IGL_INLINE void Viewer::colorFood(int food_id) {
+      Eigen::MatrixXd C;
+      Eigen::VectorXd Z = data_list[food_id].V.col(2);
       igl::jet(Z, true, C);
-      data_list[data_list.size() - 1].set_colors(C);
+      data_list[food_id].set_colors(C);
   }
 
   IGL_INLINE void Viewer::removeFood(int food_id) {
@@ -566,7 +572,143 @@ namespace glfw
           }
       }
   }
+  
+  // Assignment 4 Collision detection
 
+
+  IGL_INLINE bool Viewer::checkCollision(igl::AABB<Eigen::MatrixXd, 3>* Atree, igl::AABB<Eigen::MatrixXd, 3>* Btree) {
+      Eigen::AlignedBox<double, 3> Abox = Atree->m_box;
+      Eigen::AlignedBox<double, 3> Bbox = Btree->m_box;
+
+      Vector4f DefaultCenterA = Vector4f(Abox.center()(0), Abox.center()(1), Abox.center()(2), 1);
+      Vector4f DefaultCenterB = Vector4f(Bbox.center()(0), Bbox.center()(1), Bbox.center()(2), 1);
+
+      Matrix4f transA = data_list[SNAKE_HEAD].ParentTrans() * data_list[SNAKE_HEAD].MakeTrans();
+      Matrix4f transB = data_list[animation_id].MakeTrans();
+      Matrix3f rotationA = transA.block<3, 3>(0, 0);
+      Matrix3f rotationB = transB.block<3, 3>(0, 0);
+
+      Eigen::Vector4f centerA = data_list[SNAKE_HEAD].ParentTrans() * data_list[SNAKE_HEAD].MakeTrans() * DefaultCenterA;
+      Eigen::Vector4f centerB = data_list[animation_id].MakeTrans() * DefaultCenterB;
+      Eigen::Vector3f D = Vector3f((centerB(0) - centerA(0)), (centerB(1) - centerA(1)), (centerB(2) - centerA(2))).cwiseAbs();
+      Vector3f A0 = (rotationA * Vector3f(1, 0, 0));//.normalized();
+      Vector3f A1 = (rotationA * Vector3f(0, 1, 0));//.normalized();
+      Vector3f A2 = (rotationA * Vector3f(0, 0, 1));//.normalized();	  
+
+      Vector3f B0 = (rotationB * Vector3f(1, 0, 0));//.normalized();
+      Vector3f B1 = (rotationB * Vector3f(0, 1, 0));//.normalized();
+      Vector3f B2 = (rotationB * Vector3f(0, 0, 1));//.normalized();
+      Vector3f A[3] = { A0, A1, A2 };
+      Vector3f B[3] = { B0, B1, B2 };
+      Eigen::Vector3d a_s = Abox.sizes() / 2;
+      Eigen::Vector3d b_s = Bbox.sizes() / 2;
+      Eigen::Matrix3f c;
+      Eigen::Matrix3f c_n_abs;
+      for (size_t i = 0; i <= 2; i++)
+      {
+          for (size_t j = 0; j <= 2; j++)
+          {
+              c_n_abs(i, j) = A[i].dot(B[j]);
+              c(i, j) = std::abs(A[i].dot(B[j]));
+          }
+      }
+      bool collided = true;
+      float R0 = 0;
+      float R1 = 0;
+      float R = 0;
+      //------------------------ CHECK 1-6
+      for (size_t i = 0; i <= 2; i++)
+      {
+          R0 = a_s(i);
+          R1 = 0;
+          for (size_t j = 0; j <= 2; j++)
+          {
+              R1 += b_s(i) * c(i, j);
+          }
+          R = std::abs(A[i].dot(D));
+          if (R > R0 + R1) {
+              collided = false;
+          }
+      }
+      for (size_t i = 0; i <= 2; i++)
+      {
+          R0 = b_s(i);
+          R1 = 0;
+          for (size_t j = 0; j <= 2; j++)
+          {
+              R1 += a_s(i) * c(i, j);
+          }
+          R = std::abs(B[i].dot(D));
+          if (R > R0 + R1) {
+              collided = false;
+          }
+      }
+
+
+      //---------------------------Checks 7-9
+
+      for (size_t i = 0; i <= 2; i++)
+      {
+          R0 = a_s(1) * c(2, i) + a_s(2) * c(1, i);
+          //R1 = b_s(1) * c(2, i) + a_s(2) * c(1, i);
+          switch (i) {
+          case 0: R1 = b_s(1) * c(0, 2) + b_s(2) * c(0, 1); break;
+          case 1: R1 = b_s(0) * c(0, 2) + b_s(2) * c(0, 0); break;
+          case 2: R1 = b_s(0) * c(0, 1) + b_s(1) * c(0, 0); break;
+          }
+          float R = std::abs(c_n_abs(1, i) * A[2].dot(D) - c_n_abs(2, i) * A[1].dot(D));
+          if (R > R0 + R1) {
+              collided = false;
+          }
+      }
+
+      //--------------------------Checks 10-12
+      for (size_t i = 0; i <= 2; i++)
+      {
+          R0 = a_s(0) * c(2, i) + a_s(2) * c(0, i);
+          //R1 = b_s(1) * c(2, i) + a_s(2) * c(1, i);
+          switch (i) {
+          case 0: R1 = b_s(1) * c(1, 2) + b_s(2) * c(1, 1); break;
+          case 1: R1 = b_s(0) * c(1, 2) + b_s(2) * c(1, 0); break;
+          case 2: R1 = b_s(0) * c(1, 1) + b_s(1) * c(1, 0); break;
+          }
+          float R = std::abs(c_n_abs(2, i) * A[0].dot(D) - c_n_abs(0, i) * A[2].dot(D));
+          if (R > R0 + R1) {
+              collided = false;
+          }
+      }
+      //------------------------Checks 13-15
+      for (size_t i = 0; i <= 2; i++)
+      {
+          R0 = a_s(0) * c(1, i) + a_s(1) * c(0, i);
+          //R1 = b_s(1) * c(2, i) + a_s(2) * c(1, i);
+          switch (i) {
+          case 0: R1 = b_s(1) * c(2, 2) + b_s(2) * c(2, 1); break;
+          case 1: R1 = b_s(0) * c(2, 2) + b_s(2) * c(2, 0); break;
+          case 2: R1 = b_s(0) * c(2, 1) + b_s(1) * c(2, 0); break;
+          }
+          float R = std::abs(c_n_abs(0, i) * A[1].dot(D) - c_n_abs(1, i) * A[0].dot(D));
+          if (R > R0 + R1) {
+              collided = false;
+          }
+      }
+
+      if (collided) {
+          if (Atree->is_leaf() && Btree->is_leaf()) {
+              return true;
+          }
+          else if (Btree->is_leaf()) {
+              return (checkCollision(Atree->m_left, Btree) || (checkCollision(Atree->m_right, Btree)));
+          }
+          else if (Atree->is_leaf()) {
+              return (checkCollision(Atree, Btree->m_left) || (checkCollision(Atree, Btree->m_right)));
+          }
+          else {
+              return (checkCollision(Atree->m_left, Btree->m_left) || checkCollision(Atree->m_left, Btree->m_right) || checkCollision(Atree->m_right, Btree->m_left) || checkCollision(Atree->m_right, Btree->m_right));
+          }
+      }
+      return false;
+  }
 
 } // end namespace
 } // end namespace
