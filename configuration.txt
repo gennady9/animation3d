@@ -1,0 +1,3 @@
+C:\Dev\animation3d\tutorial\data\ycylinder.obj
+C:\Dev\animation3d\tutorial\data\sphere.obj
+C:\Dev\animation3d\tutorial\data\viperagabonlowsmall.off

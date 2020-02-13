@@ -470,7 +470,7 @@ namespace glfw
       
       // Texturing snake
       Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> R, G, B, A;
-      igl::png::readPNG("snakepng.png", R, G, B, A);
+      igl::png::readPNG("../../../textures/snakepng.png", R, G, B, A);
 
 
 	  for (size_t i = 0; i < NUM_OF_CYL; i++) {

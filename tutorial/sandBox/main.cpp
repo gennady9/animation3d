@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
 	Display* disp = new Display(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, "Animation project 2020");
 	Renderer renderer;
 	igl::opengl::glfw::Viewer viewer;
-	viewer.load_meshes_from_config_file("configuration.txt");
+	viewer.load_meshes_from_config_file("../../../configuration.txt");
 
 	viewer.MyTranslate(Vector3f(0, -5, -25)); // Camera initalization
 	Init(*disp);
