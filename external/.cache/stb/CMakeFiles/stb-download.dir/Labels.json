@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/stb/CMakeFiles/stb-download"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/stb/CMakeFiles/053c8d5b57800db66d5ac7967fb27909/stb-download.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/stb/CMakeFiles/37e3ac32dccba6e9fd77feead74b2d22/stb-download-complete.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/stb/CMakeFiles/06e0a22e2fc38e51177ef5463cbb0b3f/stb-download-install.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/stb/CMakeFiles/06e0a22e2fc38e51177ef5463cbb0b3f/stb-download-mkdir.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/stb/CMakeFiles/06e0a22e2fc38e51177ef5463cbb0b3f/stb-download-download.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/stb/CMakeFiles/06e0a22e2fc38e51177ef5463cbb0b3f/stb-download-update.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/stb/CMakeFiles/06e0a22e2fc38e51177ef5463cbb0b3f/stb-download-patch.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/stb/CMakeFiles/06e0a22e2fc38e51177ef5463cbb0b3f/stb-download-configure.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/stb/CMakeFiles/06e0a22e2fc38e51177ef5463cbb0b3f/stb-download-build.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/stb/CMakeFiles/06e0a22e2fc38e51177ef5463cbb0b3f/stb-download-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"stb-download"
+		],
+		"name" : "stb-download"
+	}
+}

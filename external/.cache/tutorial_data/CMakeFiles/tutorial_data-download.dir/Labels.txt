@@ -1,0 +1,14 @@
+# Target labels
+ tutorial_data-download
+# Source files and their labels
+D:/Animation/animation3d/external/.cache/tutorial_data/CMakeFiles/tutorial_data-download
+D:/Animation/animation3d/external/.cache/tutorial_data/CMakeFiles/ea36591e93859e9414132c64bfa0c0e5/tutorial_data-download.rule
+D:/Animation/animation3d/external/.cache/tutorial_data/CMakeFiles/3bbe6934eac22c64415fdfaeb75313a8/tutorial_data-download-complete.rule
+D:/Animation/animation3d/external/.cache/tutorial_data/CMakeFiles/449528f1d74ddc095bbc4b8ec6cdefbd/tutorial_data-download-install.rule
+D:/Animation/animation3d/external/.cache/tutorial_data/CMakeFiles/449528f1d74ddc095bbc4b8ec6cdefbd/tutorial_data-download-mkdir.rule
+D:/Animation/animation3d/external/.cache/tutorial_data/CMakeFiles/449528f1d74ddc095bbc4b8ec6cdefbd/tutorial_data-download-download.rule
+D:/Animation/animation3d/external/.cache/tutorial_data/CMakeFiles/449528f1d74ddc095bbc4b8ec6cdefbd/tutorial_data-download-update.rule
+D:/Animation/animation3d/external/.cache/tutorial_data/CMakeFiles/449528f1d74ddc095bbc4b8ec6cdefbd/tutorial_data-download-patch.rule
+D:/Animation/animation3d/external/.cache/tutorial_data/CMakeFiles/449528f1d74ddc095bbc4b8ec6cdefbd/tutorial_data-download-configure.rule
+D:/Animation/animation3d/external/.cache/tutorial_data/CMakeFiles/449528f1d74ddc095bbc4b8ec6cdefbd/tutorial_data-download-build.rule
+D:/Animation/animation3d/external/.cache/tutorial_data/CMakeFiles/449528f1d74ddc095bbc4b8ec6cdefbd/tutorial_data-download-test.rule

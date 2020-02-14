@@ -1,0 +1,10 @@
+^D:\ANIMATION\ANIMATION3D\EXTERNAL\.CACHE\TUTORIAL_DATA\CMAKEFILES\EA36591E93859E9414132C64BFA0C0E5\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -SD:/Animation/animation3d/external/.cache/tutorial_data -BD:/Animation/animation3d/external/.cache/tutorial_data --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/Animation/animation3d/external/.cache/tutorial_data/tutorial_data-download.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

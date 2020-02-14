@@ -57,6 +57,9 @@
 #include <igl/png/readPNG.h>
 #include <igl\jet.h>
 
+// Project
+#include <Windows.h>
+#include <mmsystem.h>
 //#include <igl/opengl/glfw/imgui/ImGuiMenu.h>
 
 // Internal global variables used for glfw event handling
@@ -397,6 +400,7 @@ namespace glfw
     }
     data_list[index].meshgl.free();
     data_list.erase(data_list.begin() + index);
+
     if(selected_data_index >= index && selected_data_index > 0)
     {
       selected_data_index--;
@@ -517,9 +521,9 @@ namespace glfw
 		  if (cosAngle < -1){
 			  cosAngle = -1;
 		  }
-		  //float distance = (objectPos - E).norm();
-		  //if (distance < delta) {
-          if(checkCollision(&data_list[SNAKE_HEAD].tree, &data_list[animation_id].tree)){
+		  float distance = (objectPos - E).norm();
+		  if (distance < delta) {
+          //if(checkCollision(&data_list[SNAKE_HEAD].tree, &data_list[animation_id].tree)){
 			  ik_animation = false;
               removeFood(animation_id);
               animation_id = -1;
@@ -540,7 +544,8 @@ namespace glfw
       load_mesh_from_file(foodPath);
       int index = data_list.size() - 1;
       data_list[index].setParent(NULL); // TODO: delete this
-      data_list[index].MyTranslate(Eigen::Vector3f(rand() % 10 - 10, rand() % 10 + 1, 0)); // Food positioning
+      data_list[index].MyTranslate(Eigen::Vector3f(rand() % 20 - 10, rand() % 7 + 10, 0)); // Food positioning
+      //data_list[index].MyTranslate(Eigen::Vector3f(rand() % 10 - 10, rand() % 10 + 1, 0)); // Food positioning
       data_list[index].tree.init(data_list[index].V, data_list[index].F);
 
       colorFood(index);
@@ -554,6 +559,11 @@ namespace glfw
 
   IGL_INLINE void Viewer::removeFood(int food_id) {
       erase_mesh(food_id);
+	  PlaySound(TEXT("../../../sounds/blop.wav"), NULL, SND_FILENAME);
+	  PlaySound(TEXT("../../../sounds/snake_charmer.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+	  score += 1;
+	  std::cout << "score = " << score << std::endl;
+	  createFood();
       // TODO: add sound, restore snake state(?), create some effect
   }
 

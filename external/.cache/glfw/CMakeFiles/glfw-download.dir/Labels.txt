@@ -1,0 +1,14 @@
+# Target labels
+ glfw-download
+# Source files and their labels
+D:/Animation/animation3d/external/.cache/glfw/CMakeFiles/glfw-download
+D:/Animation/animation3d/external/.cache/glfw/CMakeFiles/a39e554fb387a0dbd8e35b45cbdbd438/glfw-download.rule
+D:/Animation/animation3d/external/.cache/glfw/CMakeFiles/a3e3886a48c9eb26f4fab43c63cde8de/glfw-download-complete.rule
+D:/Animation/animation3d/external/.cache/glfw/CMakeFiles/ea01c77e894bb503bebdc46cd93071c8/glfw-download-install.rule
+D:/Animation/animation3d/external/.cache/glfw/CMakeFiles/ea01c77e894bb503bebdc46cd93071c8/glfw-download-mkdir.rule
+D:/Animation/animation3d/external/.cache/glfw/CMakeFiles/ea01c77e894bb503bebdc46cd93071c8/glfw-download-download.rule
+D:/Animation/animation3d/external/.cache/glfw/CMakeFiles/ea01c77e894bb503bebdc46cd93071c8/glfw-download-update.rule
+D:/Animation/animation3d/external/.cache/glfw/CMakeFiles/ea01c77e894bb503bebdc46cd93071c8/glfw-download-patch.rule
+D:/Animation/animation3d/external/.cache/glfw/CMakeFiles/ea01c77e894bb503bebdc46cd93071c8/glfw-download-configure.rule
+D:/Animation/animation3d/external/.cache/glfw/CMakeFiles/ea01c77e894bb503bebdc46cd93071c8/glfw-download-build.rule
+D:/Animation/animation3d/external/.cache/glfw/CMakeFiles/ea01c77e894bb503bebdc46cd93071c8/glfw-download-test.rule

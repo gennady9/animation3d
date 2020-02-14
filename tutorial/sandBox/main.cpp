@@ -1,6 +1,8 @@
 
 #include "igl/opengl/glfw/renderer.h"
 #include "tutorial/sandBox/inputManager.h"
+#include <Windows.h>
+#include <mmsystem.h>
 //#include "imgui/imgui.h"
 
 #define VIEWPORT_WIDTH 1000
@@ -8,6 +10,8 @@
 
 int main(int argc, char* argv[])
 {
+	PlaySound(TEXT("../../../sounds/snake_charmer.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+
 	Display* disp = new Display(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, "Animation project 2020");
 	Renderer renderer;
 	igl::opengl::glfw::Viewer viewer;
@@ -28,6 +32,7 @@ int main(int argc, char* argv[])
 
 	renderer.setSelectedCore(left_view);
 	*/
+	//SoundEngine->play2D("ophelia.mp3", GL_TRUE);
 	disp->launch_rendering(true);
 
 	delete disp;

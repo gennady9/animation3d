@@ -137,7 +137,7 @@ namespace glfw
     IGL_INLINE void drawBox(int obj_id, Eigen::AlignedBox<double, 3>* box);
     IGL_INLINE bool checkCollision(igl::AABB<Eigen::MatrixXd, 3>* Atree, igl::AABB<Eigen::MatrixXd, 3>* Btree);
     bool collision = false;
-
+	int score;
 
 public:
     //////////////////////
@@ -153,8 +153,6 @@ public:
 	bool scene_selected;
     int next_data_id;
 
-    // Project
-    int score;
     // Assignment 2: mesh decimation
 
 	//std::vector<MeshData> mesh_data_list;

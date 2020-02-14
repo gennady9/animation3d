@@ -1,5 +1,6 @@
 #pragma once
 #include "igl/opengl/glfw/Display.h"
+
 static void glfw_mouse_press(GLFWwindow* window, int button, int action, int modifier)
 {
 
@@ -28,12 +29,12 @@ static void glfw_mouse_press(GLFWwindow* window, int button, int action, int mod
 		}
 		if (!found)
 		{
-			std::cout << "not found " << std::endl;
+			//std::cout << "not found " << std::endl;
 			scn->selected_data_index = savedIndx;
 			scn->scene_selected = true;
 		}
 		else {
-			std::cout << "found " << closestObject << std::endl;
+			//std::cout << "found " << closestObject << std::endl;
 			scn->selected_data_index = closestObject;
 			scn->scene_selected = false;
 
@@ -71,6 +72,7 @@ static void glfw_mouse_press(GLFWwindow* window, int button, int action, int mod
 static void glfw_mouse_scroll(GLFWwindow* window, double x, double y)
 {
 	Renderer* rndr = (Renderer*)glfwGetWindowUserPointer(window);
+	std::cout << "y scroll = " << y << std::endl;
 	rndr->GetScene()->data().MyScale(Eigen::Vector3f(1 + y * 0.01,1 + y * 0.01,1+y*0.01));
 
 }
@@ -145,7 +147,9 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 		case 'D':
 		case 'd':
 		{
-
+			//scn->data().MyScale(Vector3f(1.5f, 1.5f, 1.5f));
+			//scn->food_animation = false;
+			//scn->load_mesh_from_file("D:/Animation/animation3d/tutorial/data/ycylinder.obj");
 
 			// Replace the mesh with a triangulated square
 			/*Eigen::MatrixXd V(4, 3);

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Animation\animation3d\external\.cache\tutorial_data\CMakeFiles\449528f1d74ddc095bbc4b8ec6cdefbd\tutorial_data-download-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Animation\animation3d\external\.cache\tutorial_data\CMakeFiles\449528f1d74ddc095bbc4b8ec6cdefbd\tutorial_data-download-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Animation\animation3d\external\.cache\tutorial_data\CMakeFiles\449528f1d74ddc095bbc4b8ec6cdefbd\tutorial_data-download-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Animation\animation3d\external\.cache\tutorial_data\CMakeFiles\449528f1d74ddc095bbc4b8ec6cdefbd\tutorial_data-download-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Animation\animation3d\external\.cache\tutorial_data\CMakeFiles\449528f1d74ddc095bbc4b8ec6cdefbd\tutorial_data-download-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Animation\animation3d\external\.cache\tutorial_data\CMakeFiles\449528f1d74ddc095bbc4b8ec6cdefbd\tutorial_data-download-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Animation\animation3d\external\.cache\tutorial_data\CMakeFiles\449528f1d74ddc095bbc4b8ec6cdefbd\tutorial_data-download-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Animation\animation3d\external\.cache\tutorial_data\CMakeFiles\449528f1d74ddc095bbc4b8ec6cdefbd\tutorial_data-download-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Animation\animation3d\external\.cache\tutorial_data\CMakeFiles\3bbe6934eac22c64415fdfaeb75313a8\tutorial_data-download-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Animation\animation3d\external\.cache\tutorial_data\CMakeFiles\ea36591e93859e9414132c64bfa0c0e5\tutorial_data-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Animation\animation3d\external\.cache\tutorial_data\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\Animation\animation3d\external\.cache\tutorial_data\CMakeFiles\tutorial_data-download" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{C55A551F-CC76-3D52-8929-F9D98E4D0E4C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

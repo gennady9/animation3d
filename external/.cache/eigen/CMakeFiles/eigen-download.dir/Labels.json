@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/eigen/CMakeFiles/eigen-download"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/eigen/CMakeFiles/39bcbc2c45aaf26ab9e44a8abe6e13c9/eigen-download.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/eigen/CMakeFiles/599410fb317de9d3e076e04e62e82e79/eigen-download-complete.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/eigen/CMakeFiles/105c2d96f33951b2a1273b70e8896631/eigen-download-install.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/eigen/CMakeFiles/105c2d96f33951b2a1273b70e8896631/eigen-download-mkdir.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/eigen/CMakeFiles/105c2d96f33951b2a1273b70e8896631/eigen-download-download.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/eigen/CMakeFiles/105c2d96f33951b2a1273b70e8896631/eigen-download-update.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/eigen/CMakeFiles/105c2d96f33951b2a1273b70e8896631/eigen-download-patch.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/eigen/CMakeFiles/105c2d96f33951b2a1273b70e8896631/eigen-download-configure.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/eigen/CMakeFiles/105c2d96f33951b2a1273b70e8896631/eigen-download-build.rule"
+		},
+		{
+			"file" : "D:/Animation/animation3d/external/.cache/eigen/CMakeFiles/105c2d96f33951b2a1273b70e8896631/eigen-download-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"eigen-download"
+		],
+		"name" : "eigen-download"
+	}
+}

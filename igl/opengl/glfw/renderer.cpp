@@ -144,8 +144,8 @@ void Renderer::MouseProcessing(int button)
 	else
 	{
 		if (scn->scene_selected) {
-			scn->MyRotate(Eigen::Vector3f(1, 0, 0), xrel / 180.0f);
-			scn->MyRotate(Eigen::Vector3f(0, 0, 1), yrel / 180.0f);
+			//scn->MyRotate(Eigen::Vector3f(1, 0, 0), xrel / 180.0f);
+			//scn->MyRotate(Eigen::Vector3f(0, 0, 1), yrel / 180.0f);
 		}
 		else {
 			if (scn->selected_data_index >= 0 && scn->selected_data_index <= 9){ // snake selected

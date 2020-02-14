@@ -1,0 +1,17 @@
+# CMake generation dependency list for this directory.
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/CMakeDetermineSystem.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/CMakeGenericSystem.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/CMakeSystem.cmake.in
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/ExternalProject.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/FindGit.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/FindPackageMessage.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/Platform/Windows.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/Platform/WindowsPaths.cmake
+C:/Program Files (x86)/CMake/share/cmake-3.16/Modules/RepositoryInfo.txt.in
+D:/Animation/animation3d/external/.cache/stb/CMakeFiles/3.16.0-rc3/CMakeSystem.cmake
+D:/Animation/animation3d/external/.cache/stb/CMakeLists.txt
+D:/Animation/animation3d/external/.cache/stb/stb-download-prefix/tmp/stb-download-cfgcmd.txt.in
