@@ -61,10 +61,11 @@
 #include <Windows.h>
 #include <mmsystem.h>
 
+
 #define COLLISION_DETECTION false
 #define BLOP_SOUND false
 #define LEVEL_DURATION 10
-#define LEVEL_UP_SCORE 40
+#define LEVEL_UP_SCORE 20
 //#include <igl/opengl/glfw/imgui/ImGuiMenu.h>
 
 // Internal global variables used for glfw event handling
@@ -115,8 +116,10 @@ namespace glfw
 
     // Project
     score = 0;
+	level_up_score = LEVEL_UP_SCORE;
+	level_duration = LEVEL_DURATION;
 	level = 1;
-
+	level_won = false;
     // Temporary variables initialization
    // down = false;
   //  hack_never_moved = true;
@@ -453,23 +456,7 @@ namespace glfw
 		}
         load_mesh_from_file(snake_head_path);
         data_list[SNAKE_HEAD].tree.init(data_list[SNAKE_HEAD].V, data_list[SNAKE_HEAD].F);
-		for (size_t i = 0; i < 3; i++){
-			createFood();
-		}
-
-        //erase_mesh(0);
-        //load_mesh_from_file(sphere_path);
-        //load_mesh_from_file(sphere_path);
-        //erase_mesh(11);
-
-        //data_list[0]
-		// Assignment 2 Edge decimation
-	    //for (size_t i = 0; i < data_list.size(); ++i) { 
-		//    data_list[i].decimationReset();
-	    //}
-
-		// Assignment 3
-		update_initial_positions();
+		update_initial_positions(); // ik init
 
   }
 
@@ -557,7 +544,7 @@ namespace glfw
       //data_list[index].MyTranslate(Eigen::Vector3f(rand() % 10 - 10, rand() % 10 + 1, 0)); // Food positioning
       data_list[index].tree.init(data_list[index].V, data_list[index].F);
 
-	  if ( score > 0 && score % level == 0) {
+	  if ( /*score > 0 && */score % level == 0) {
 		  data_list[index].extra = true;
 		  colorFood(index);
 	  }
@@ -578,6 +565,58 @@ namespace glfw
 	  erase_mesh(food_id);
 	  std::cout << "Level: (" << level << ") Score: " << score << std::endl;
 	  createFood();
+  }
+
+  IGL_INLINE void Viewer::removeAllFood() {
+	  for (size_t i = data_list.size() - 1; i > SNAKE_HEAD; i--)
+	  {
+		  erase_mesh(i);
+	  }
+  }
+
+  IGL_INLINE void Viewer::startLevel() {
+	   //level_start = !level_start;
+	   for (size_t i = 0; i < 3; i++) {
+		   createFood();
+	   }
+	   PlaySound(TEXT("../../../sounds/snake_charmer.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+	   score = 0;
+	   time(&level_start_time);
+	   level_animation = true;
+	   level_won = false;
+  }  
+  IGL_INLINE void Viewer::finishLevel() {
+	  removeAllFood();
+	  level_animation = false;
+	  std::cout << "Level " << level << " Finished. Your score = " << score << std::endl;
+	  if (level_won) {
+		  switch (level) {
+		  case 1:
+			  PlaySound(TEXT("../../../sounds/level1.wav"), NULL, SND_FILENAME);
+			  break;
+		  case 2:
+			  PlaySound(TEXT("../../../sounds/level2todd.wav"), NULL, SND_FILENAME);
+			  break;
+		  default:
+			  PlaySound(TEXT("../../../sounds/level_pass.wav"), NULL, SND_FILENAME);
+			  break;
+		  }
+		  std::cout << "Press D to continue to next level, press C to start again" << std::endl;
+	  }
+	  else {
+		  PlaySound(TEXT("../../../sounds/level_lost.wav"), NULL, SND_FILENAME);
+		  std::cout << "You lost :( press C to start again" << std::endl;
+	  }
+
+	  //std::cout << "level finish";
+	  //level += level;
+
+	   //time(&level_start_time);
+	   //level_start = !level_start;
+	   //for (size_t i = 0; i < 3; i++) {
+		//   removeFood();
+	   //}
+	   //score = 0;
   }
 
   IGL_INLINE void Viewer::foodAnimation() {

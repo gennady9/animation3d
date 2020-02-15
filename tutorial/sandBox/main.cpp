@@ -10,7 +10,6 @@
 
 int main(int argc, char* argv[])
 {
-	PlaySound(TEXT("../../../sounds/snake_charmer.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 
 	Display* disp = new Display(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, "Animation project 2020");
 	Renderer renderer;
@@ -33,6 +32,7 @@ int main(int argc, char* argv[])
 	renderer.setSelectedCore(left_view);
 	*/
 	//SoundEngine->play2D("ophelia.mp3", GL_TRUE);
+	viewer.startLevel();
 	disp->launch_rendering(true);
 
 	delete disp;

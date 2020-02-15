@@ -72,7 +72,6 @@ static void glfw_mouse_press(GLFWwindow* window, int button, int action, int mod
 static void glfw_mouse_scroll(GLFWwindow* window, double x, double y)
 {
 	Renderer* rndr = (Renderer*)glfwGetWindowUserPointer(window);
-	std::cout << "y scroll = " << y << std::endl;
 	rndr->GetScene()->data().MyScale(Eigen::Vector3f(1 + y * 0.01,1 + y * 0.01,1+y*0.01));
 
 }
@@ -147,44 +146,20 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 		case 'D':
 		case 'd':
 		{
-			//scn->data().MyScale(Vector3f(1.5f, 1.5f, 1.5f));
-			//scn->food_animation = false;
-			//scn->load_mesh_from_file("D:/Animation/animation3d/tutorial/data/ycylinder.obj");
+			if (!scn->level_animation && scn->level_won) {
+				scn->level += 1;
+				scn->startLevel();
+			}
 
-			// Replace the mesh with a triangulated square
-			/*Eigen::MatrixXd V(4, 3);
-			V <<
-				-0.5, -0.5, 0,
-				0.5, -0.5, 0,
-				0.5, 0.5, 0,
-				-0.5, 0.5, 0;
-			Eigen::MatrixXi F(2, 3);
-			F <<
-				0, 1, 2,
-				2, 3, 0;
-			Eigen::MatrixXd UV(4, 2);
-			UV <<
-				0, 0,
-				1, 0,
-				1, 1,
-				0, 1;
-				
-			scn->data().clear();
-			scn->data().set_mesh(V, F);
-			scn->data().set_uv(UV);
-			rndr->core().align_camera_center(V);*/
-
-			// Use the image as a texture
-			//scn->data().grid_texture
-			//scn->data().show_texture = true;
-			//scn->data().set_texture
-			//scn->data().texture_A
 			break;
 		}
 		case 'C':
 		case 'c':
 		{
-			scn->createFood();
+			if (!scn->level_animation) {
+				scn->level = 1;
+				scn->startLevel();
+			}
 			break;
 		}
 		case '1':

@@ -36,6 +36,7 @@ using namespace Eigen;
 #include <set>
 // Assignment 4
 #include <igl\AABB.h>
+#include <time.h>
 
 namespace igl
 {
@@ -128,9 +129,14 @@ namespace glfw
 	IGL_INLINE void createFood();
     IGL_INLINE void colorFood(int food_id);
     IGL_INLINE void removeFood(int food_id);
+	IGL_INLINE void removeAllFood();
+	IGL_INLINE void startLevel();
+	IGL_INLINE void finishLevel();
     IGL_INLINE void foodAnimation();
 	bool ik_animation = false;
-	bool food_animation = true;
+	bool level_animation = true;
+	//bool level_start = false;
+	time_t level_start_time = 0;
     int animation_id = -1;
     std::string foodPath;
 	// Assignment 4
@@ -139,6 +145,9 @@ namespace glfw
     bool collision = false;
 	int score;
 	int level;
+	int level_up_score;
+	int level_duration;
+	bool level_won;
 
 public:
     //////////////////////

@@ -37,13 +37,19 @@ next_core_id(2)
 }
 
 IGL_INLINE void Renderer::Animate() {
-	if (scn->ik_animation) {
-		scn->IKSolver(scn->animation_id);
-	}
-	if (scn->food_animation) {
+
+	if (scn->level_animation) {
+		if (scn->ik_animation) {
+			scn->IKSolver(scn->animation_id);
+		}
 		scn->foodAnimation();
+		// checking level time
+		time_t current_time;
+		if (difftime(time(&current_time), scn->level_start_time) >= scn->level_duration) {
+			scn->level_won = (scn->score >= scn->level_up_score);
+			scn->finishLevel();
+		}
 	}
-	
 }
 
 IGL_INLINE void Renderer::draw( GLFWwindow* window)
