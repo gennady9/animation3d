@@ -60,6 +60,8 @@
 // Project
 #include <Windows.h>
 #include <mmsystem.h>
+
+#define COLLISION_DETECTION false
 //#include <igl/opengl/glfw/imgui/ImGuiMenu.h>
 
 // Internal global variables used for glfw event handling
@@ -448,6 +450,7 @@ namespace glfw
         load_mesh_from_file(snake_head_path);
         data_list[SNAKE_HEAD].tree.init(data_list[SNAKE_HEAD].V, data_list[SNAKE_HEAD].F);
         createFood();
+        createFood();
 
         //erase_mesh(0);
         //load_mesh_from_file(sphere_path);
@@ -522,8 +525,9 @@ namespace glfw
 			  cosAngle = -1;
 		  }
 		  float distance = (objectPos - E).norm();
-		  if (distance < delta) {
-          //if(checkCollision(&data_list[SNAKE_HEAD].tree, &data_list[animation_id].tree)){
+		  if ((!COLLISION_DETECTION && (distance < delta)) ||
+			  (COLLISION_DETECTION && checkCollision(&data_list[SNAKE_HEAD].tree, &data_list[animation_id].tree))) {
+          //if(){
 			  ik_animation = false;
               removeFood(animation_id);
               animation_id = -1;
@@ -559,8 +563,8 @@ namespace glfw
 
   IGL_INLINE void Viewer::removeFood(int food_id) {
       erase_mesh(food_id);
-	  PlaySound(TEXT("../../../sounds/blop.wav"), NULL, SND_FILENAME);
-	  PlaySound(TEXT("../../../sounds/snake_charmer.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+	  //PlaySound(TEXT("../../../sounds/blop.wav"), NULL, SND_FILENAME);
+	  //PlaySound(TEXT("../../../sounds/snake_charmer.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 	  score += 1;
 	  std::cout << "score = " << score << std::endl;
 	  createFood();
@@ -571,12 +575,14 @@ namespace glfw
       for (auto& mesh : data_list) {
           if (mesh.id > SNAKE_HEAD) { // if not snake
               mesh.MyTranslate(mesh.direction);
-              mesh.MyRotate(mesh.direction.normalized(), 0.1f);
+			  Vector3f rotVec = mesh.direction.normalized().cross(Vector3f(0, 0, -1));
+              mesh.MyRotate(rotVec.normalized(), 0.1f);
+
               Eigen::RowVector4f objectPos = (mesh.MakeTrans() * Eigen::Vector4f(0, 0, 0, 1));
-              if (objectPos(1) <= 0 || objectPos(1) > 16) { // y <= 0
+              if (objectPos(1) <= 0 || objectPos(1) > 16) { // y borders
                   mesh.direction << mesh.direction(0), -mesh.direction(1), mesh.direction(2);
               }
-              if (objectPos(0) > 16 || objectPos(0) < -16) {
+              if (objectPos(0) > 16 || objectPos(0) < -16) { // x borders
                   mesh.direction << -mesh.direction(0), mesh.direction(1), mesh.direction(2);
               }
           }

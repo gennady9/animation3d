@@ -39,7 +39,7 @@ static void glfw_mouse_press(GLFWwindow* window, int button, int action, int mod
 			scn->scene_selected = false;
 
 			// Project code
-			if (scn->selected_data_index < 0 || scn->selected_data_index > 9) { // not snake selected
+			if (button == GLFW_MOUSE_BUTTON_LEFT && (scn->selected_data_index < 0 || scn->selected_data_index > 9)) { // not snake selected
 				scn->animation_id = scn->selected_data_index;
 				scn->ik_animation = !scn->ik_animation;
 			}
