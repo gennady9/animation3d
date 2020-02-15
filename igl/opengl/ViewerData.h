@@ -179,6 +179,8 @@ public:
   // Project
   Eigen::Vector3f direction;
   Eigen::Vector3f speed;
+  bool extra;
+
 
   IGL_INLINE void decimateEdges();
   IGL_INLINE void calculate_v_faces();

@@ -395,6 +395,7 @@ IGL_INLINE void igl::opengl::ViewerData::clear()
   speed = Eigen::Vector3f(speed_x, speed_y, 0);//(rand() * 30 + 1) / 1000);
   //std::cout << "speed  = " << speed << std::endl;
   direction = Eigen::Vector3f(speed(0), -speed(1), 0);//0.02f, -0.02f, 0);
+  extra = false;
 }
 using namespace Eigen; // Assignment 2
 IGL_INLINE void igl::opengl::ViewerData::decimationReset() {

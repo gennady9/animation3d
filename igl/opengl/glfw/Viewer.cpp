@@ -62,6 +62,9 @@
 #include <mmsystem.h>
 
 #define COLLISION_DETECTION false
+#define BLOP_SOUND false
+#define LEVEL_DURATION 10
+#define LEVEL_UP_SCORE 40
 //#include <igl/opengl/glfw/imgui/ImGuiMenu.h>
 
 // Internal global variables used for glfw event handling
@@ -112,6 +115,7 @@ namespace glfw
 
     // Project
     score = 0;
+	level = 1;
 
     // Temporary variables initialization
    // down = false;
@@ -449,8 +453,9 @@ namespace glfw
 		}
         load_mesh_from_file(snake_head_path);
         data_list[SNAKE_HEAD].tree.init(data_list[SNAKE_HEAD].V, data_list[SNAKE_HEAD].F);
-        createFood();
-        createFood();
+		for (size_t i = 0; i < 3; i++){
+			createFood();
+		}
 
         //erase_mesh(0);
         //load_mesh_from_file(sphere_path);
@@ -552,7 +557,10 @@ namespace glfw
       //data_list[index].MyTranslate(Eigen::Vector3f(rand() % 10 - 10, rand() % 10 + 1, 0)); // Food positioning
       data_list[index].tree.init(data_list[index].V, data_list[index].F);
 
-      colorFood(index);
+	  if ( score > 0 && score % level == 0) {
+		  data_list[index].extra = true;
+		  colorFood(index);
+	  }
   }
   IGL_INLINE void Viewer::colorFood(int food_id) {
       Eigen::MatrixXd C;
@@ -562,13 +570,14 @@ namespace glfw
   }
 
   IGL_INLINE void Viewer::removeFood(int food_id) {
-      erase_mesh(food_id);
-	  //PlaySound(TEXT("../../../sounds/blop.wav"), NULL, SND_FILENAME);
-	  //PlaySound(TEXT("../../../sounds/snake_charmer.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
-	  score += 1;
-	  std::cout << "score = " << score << std::endl;
+	  if (BLOP_SOUND) {
+		  PlaySound(TEXT("../../../sounds/blop.wav"), NULL, SND_FILENAME);
+		  PlaySound(TEXT("../../../sounds/snake_charmer.wav"), NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+	  }
+	  score += (data_list[food_id].extra ? 5 : 1);
+	  erase_mesh(food_id);
+	  std::cout << "Level: (" << level << ") Score: " << score << std::endl;
 	  createFood();
-      // TODO: add sound, restore snake state(?), create some effect
   }
 
   IGL_INLINE void Viewer::foodAnimation() {

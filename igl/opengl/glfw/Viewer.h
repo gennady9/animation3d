@@ -138,6 +138,7 @@ namespace glfw
     IGL_INLINE bool checkCollision(igl::AABB<Eigen::MatrixXd, 3>* Atree, igl::AABB<Eigen::MatrixXd, 3>* Btree);
     bool collision = false;
 	int score;
+	int level;
 
 public:
     //////////////////////
