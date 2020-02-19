@@ -57,6 +57,7 @@ IGL_INLINE void Renderer::draw( GLFWwindow* window)
 	using namespace std;
 	using namespace Eigen;
 
+
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 
@@ -77,33 +78,36 @@ IGL_INLINE void Renderer::draw( GLFWwindow* window)
 	}
 	for (auto& core : core_list)
 	{
+		Eigen::Matrix4f LastLinkPos = scn->data_list[9].MakeTrans() * scn->data_list[9].ParentTrans();
 		if (core.id == 2) {
+
 			for (size_t i = 0; i < scn->data_list.size(); i++)
 			{
-				//scn->data_list[i].set_visible(true, core.id);
-				//core.toggle(scn->data_list[i].show_lines);
-				//core(right_view).toggle(scn->data_list[i].show_lines);
-				//core.set(scn->data_list[i].show_faces, true); // TODO: delete when finished
-			}
-			Vector4f arm_tip_4 = scn->data_list[10].ParentTrans() * scn->data_list[10].MakeTrans() * Eigen::Vector4f(0, +0.8, 0, 1);
-			Vector3f arm_tip;
-			arm_tip << arm_tip_4(0), arm_tip_4(1), arm_tip_4(2);
-			core.camera_eye = arm_tip;
-			core.camera_center = Vector3f(0, -1, 0);
-		}
+				scn->data_list[i].set_visible(true, core.id);
+				core.set(scn->data_list[i].show_lines, true);
+				core.set(scn->data_list[i].show_faces, true);
 
+			}
+		}
 
 		for (auto& mesh : scn->data_list)
 		{
 			if (mesh.is_visible & core.id)
 			{
-				if (mesh.id >= 0 && mesh.id < 10) { // snake
-					Eigen::Matrix4f sceneAndParents = (scn->MakeTrans() * scn->data_list[mesh.id].ParentTrans());
-					core.draw(sceneAndParents, mesh);
+				if (core.id == 2 && mesh.id >= 10) { // snake view & not snake mesh
+					Matrix4f newWorld = (LastLinkPos).inverse();
+					core.draw(newWorld, mesh);
 				}
 				else {
-					core.draw(scn->MakeTrans(), mesh);
+					if (mesh.id >= 0 && mesh.id < 10) { // snake
+						Eigen::Matrix4f sceneAndParents = (scn->MakeTrans() * scn->data_list[mesh.id].ParentTrans());
+						core.draw(sceneAndParents, mesh);
+					}
+					else {
+						core.draw(scn->MakeTrans(), mesh);
+					}
 				}
+
 			}
 		}
 	}
@@ -196,8 +200,10 @@ bool Renderer::Picking(double newx, double newy)
 // Project functions
 float Renderer::toothPicking(double newx, double newy)
 {
+
 	int fid;
 	Eigen::Vector3f bc;
+	setSelectedCore(0);
 	double x = newx;
 	double y = core().viewport(3) - newy;
 	Eigen::Matrix4f view = Eigen::Matrix4f::Identity();
@@ -205,11 +211,6 @@ float Renderer::toothPicking(double newx, double newy)
 	//if (scn->data().id >= 0 && scn->data().id <= 9) {
 		view = view * (core().trackball_angle * Eigen::Scaling(core().camera_zoom * core().camera_base_zoom)
 			* Eigen::Translation3f(core().camera_translation + core().camera_base_translation)).matrix() * scn->MakeTrans() * scn->data().ParentTrans() * scn->data().MakeTrans();
-	//}
-	//else {
-	//	view = view * (core().trackball_angle * Eigen::Scaling(core().camera_zoom * core().camera_base_zoom)
-	//		* Eigen::Translation3f(core().camera_translation + core().camera_base_translation)).matrix() * scn->MakeTrans() * scn->data().MakeTrans();
-	//}
 	if (igl::unproject_onto_mesh(Eigen::Vector2f(x, y), view,
 		core().proj, core().viewport, scn->data().V, scn->data().F, fid, bc))
 	{

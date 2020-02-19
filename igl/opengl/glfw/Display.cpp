@@ -9,7 +9,8 @@
 #include "igl/igl_inline.h"
 #include <igl/get_seconds.h>
 
-
+#define VIEWPORT_WIDTH 1000
+#define VIEWPORT_HEIGHT 800
 
 
 // Skybox stuff start----------------------
@@ -171,7 +172,7 @@ Display::Display(int windowWidth, int windowHeight, const std::string& title)
 bool Display::launch_rendering(bool loop)
 {
 	// glfwMakeContextCurrent(window);
-
+	
 	// skybox start
 	Shader skyboxShader("../../../shaders/skybox.vs", "../../../shaders/skybox.fs");
 	// set up vertex data (and buffer(s)) and configure vertex attributes
@@ -201,7 +202,7 @@ bool Display::launch_rendering(bool loop)
 	skyboxShader.use(); // shader configuration
 	skyboxShader.setInt("skybox", 0);
 	//------------------ Skybox end----------------
-
+	
 	// Rendering loop
 	const int num_extra_frames = 5;
 	int frame_counter = 0;
@@ -217,9 +218,10 @@ bool Display::launch_rendering(bool loop)
 		renderer->Animate();
 		renderer->draw(window);
 
+		// draw background
+		glViewport(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-		// draw skybox
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		skyboxShader.use();
 		view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
@@ -232,7 +234,21 @@ bool Display::launch_rendering(bool loop)
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS); // set depth function back to default
+		// draw background
+		glViewport((VIEWPORT_WIDTH / 4) * 3, VIEWPORT_HEIGHT / 5, VIEWPORT_WIDTH / 4 * 1, VIEWPORT_HEIGHT / 5);
 
+		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+		skyboxShader.use();
+		skyboxShader.setMat4("view", view);
+		skyboxShader.setMat4("projection", projection);
+		// skybox cube
+		glBindVertexArray(skyboxVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS); // set depth function back to default
+		// background end
 		glfwSwapBuffers(window);
 
 

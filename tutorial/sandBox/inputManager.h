@@ -16,7 +16,6 @@ static void glfw_mouse_press(GLFWwindow* window, int button, int action, int mod
 		float distance;
 		int closestObject = 0;
 		int i = 0, savedIndx = scn->selected_data_index;
-
 		for (; i < scn->data_list.size(); i++)
 		{
 			scn->selected_data_index = i;
@@ -57,6 +56,7 @@ static void glfw_mouse_press(GLFWwindow* window, int button, int action, int mod
 
  void glfw_mouse_move(GLFWwindow* window, double x, double y)
 {
+	 //y = y + 20;
 	 Renderer* rndr = (Renderer*)glfwGetWindowUserPointer(window);
 	 rndr->UpdatePosition(x, y);
 	 if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
@@ -196,6 +196,7 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 		}
 		case ' ':
 		{
+			scn->level_animation = !scn->level_animation;
 			/*if (scn->sphereReachable()) {
 				scn->animation = !scn->animation;
 			}

@@ -64,7 +64,7 @@
 
 #define COLLISION_DETECTION false
 #define BLOP_SOUND false
-#define LEVEL_DURATION 10
+#define LEVEL_DURATION 1000
 #define LEVEL_UP_SCORE 20
 //#include <igl/opengl/glfw/imgui/ImGuiMenu.h>
 
