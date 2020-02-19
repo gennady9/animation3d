@@ -9,12 +9,14 @@ Kinematic Chain and Inverse Kinematic solver
 Collision detection using AABB trees
 ## Final Project - Snake game
 Implementations:
-- Snake constructed from 9 cylinders and snake mesh head
-- Added additional window, for seeing from snake perspective
+- Snake (Cylinders and snake head mesh)
+- Added additional camera window (snake perspective)
+- Level and scoring system
 
 Optional Implementations:
 - Snake texturing
-- Added background (skycube)
+- Added background
 - Snake food coloring and rotation on movement
 - Sound (Snake flute music)
 
+![alt text](https://i.imgur.com/B4Df552.jpg)
